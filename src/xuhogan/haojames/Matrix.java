@@ -1,5 +1,7 @@
 package xuhogan.haojames;
 
+import java.util.function.DoubleBinaryOperator;
+
 public class Matrix {
 	private double[][] matrix;
 	
@@ -20,15 +22,8 @@ public class Matrix {
 	 * @param scalar a scalar
 	 * @return the product, which is a new matrix
 	 */
-	public Matrix scalarMultiply(int scalar) {
-		int r = this.matrix.length, c = this.matrix[0].length;
-		double[][] newMatrix = new double[r][c];
-		for (int currentRow = 0; currentRow < r; currentRow++) {
-			for (int currentCol = 0; currentCol < c; currentCol++) {
-				newMatrix[currentRow][currentCol] = matrix[currentRow][currentCol] * scalar;
-			}
-		}
-		return new Matrix(newMatrix); 
+	public Matrix scalarMultiply(double scalar) {
+		return elementwiseOperation(scalar, (double x, double y) -> (x * y)); 
 	}
 	
 	/**
@@ -60,5 +55,16 @@ public class Matrix {
 		// find my copy of the code. if you can find yours, can you put it in here instead
 		// of reinventing the wheel. 
 		return null;
+	}
+	
+	public Matrix elementwiseOperation(double other, DoubleBinaryOperator operation) {
+		int r = this.matrix.length, c = this.matrix[0].length;
+		double[][] newMatrix = new double[r][c];
+		for (int currentRow = 0; currentRow < r; currentRow++) {
+			for (int currentCol = 0; currentCol < c; currentCol++) {
+				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol], other);
+			}
+		}
+		return new Matrix(newMatrix); 
 	}
 }
