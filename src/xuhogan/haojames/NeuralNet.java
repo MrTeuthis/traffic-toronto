@@ -52,7 +52,8 @@ public class NeuralNet {
 	}
 
 	public static double sigmoidDerivative(double z) {
-		return Math.exp(-z)/(Math.pow((1 + Math.exp(-z)), 2));
+		//return Math.exp(-z)/(Math.pow((1 + Math.exp(-z)), 2));
+		return z * (1-z);
 	}
 	
 	/**
@@ -84,14 +85,11 @@ public class NeuralNet {
 		return activations;
 	}
 	
-	public Matrix backpropagate(Matrix x, Matrix y) throws DimensionMismatchException{
-		Matrix a = feedForward(x);
-		NeuralNet newNN = new NeuralNet(this.weights);
-		ArrayList<Matrix> activations = feedForwardActivations(x);
-		ArrayList<Matrix> deltas = new ArrayList<Matrix>(activations.size());
-		//deltas.set(activations.size()-1, activations.get(activations.size()-1).matrixSubtract(y));
-		for (int i=activations.size()-2; i>=1; i--) {
-			deltas.set(i, activations.get(i));
+	//X includes bias
+	public Matrix backpropagate(ArrayList<Matrix> X, ArrayList<Matrix> Y) throws DimensionMismatchException{
+		for (int i=0; i<X.size(); i++) {
+			Matrix x = X.get(i);
+			Matrix y = Y.get(i);
 		}
 		return null;
 	}
