@@ -97,8 +97,7 @@ public class NeuralNet {
 	}
 	
 	/**
-	 * Feeds input into the neural net, like {@code Matrix.feedForward}, but returns the result of
-	 * the cost function J(theta) instead of the result. 
+	 * Returns the result of the cost function J(theta). 
 	 * @param inputs an array of inputs
 	 * @param expectedOutputs the expected answer
 	 * @return the cost
@@ -125,8 +124,7 @@ public class NeuralNet {
 	}
 	
 	/**
-	 * Feeds input into the neural net, like {@code Matrix.feedForward}, but returns the result of
-	 * the cost function J(theta) instead of the result. 
+	 * Returns the result of the cost function J(theta). 
 	 * @param inputs an array of inputs
 	 * @param expectedOutputs the expected answer
 	 * @return the cost
