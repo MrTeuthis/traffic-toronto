@@ -160,4 +160,23 @@ public class Matrix {
 		}
 		return display;
 	}
+	
+	/**
+	 * Returns this matrix, as a vector
+	 * @return a vector
+	 * @throws DimensionMismatchException thrown when the matrix isn't a vector
+	 */
+	public Vector toVector() throws DimensionMismatchException {
+		if (matrix.length == 1) {
+			return new Vector(matrix[0], false);
+		}
+		else if (matrix[0].length == 1) {
+			double[] things = new double[matrix.length];
+			for (int i = 0; i < matrix.length; i++) {
+				things[i] = matrix[i][0];
+			}
+			return new Vector(things, false);
+		}
+		throw new DimensionMismatchException("not a vector");
+	}
 }

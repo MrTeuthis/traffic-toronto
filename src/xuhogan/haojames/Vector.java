@@ -1,6 +1,10 @@
 package xuhogan.haojames;
 
 public class Vector extends Matrix {
+	public Vector() {
+		super();
+	}
+	
 	/**
 	 * Creates a vector (i.e., that has only 1 row AND/OR only 1 column)
 	 * @param vector the single-dimensional array that is the vector

@@ -61,22 +61,22 @@ public class NeuralNet {
 	 * @return a matrix, which is also a vertical vector, containing the results
 	 * @throws DimensionMismatchException thrown when the input array is not the right size
 	 */
-	public Matrix feedForward(Matrix x) throws DimensionMismatchException {
-		Matrix z = new Matrix();
+	public Matrix feedForward(Vector x) throws DimensionMismatchException {
+		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = Matrix.addBiasToVector(x);
+			x = Vector.addBias(x);
 			z = this.getWeights(i).matrixMultiply(x);
 			x = z.sigmoidElementwise();
 		}
 		return x;
 	}
 	
-	public ArrayList<Matrix> feedForwardActivations(Matrix x) throws DimensionMismatchException {
-		ArrayList<Matrix> activations = new ArrayList<Matrix>();
+	public ArrayList<Vector> feedForwardActivations(Vector x) throws DimensionMismatchException {
+		ArrayList<Vector> activations = new ArrayList<Vector>();
 		Matrix z = new Matrix();
 		activations.add(x);
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = Matrix.addBiasToVector(x);
+			x = Vector.addBias(x);
 			z = this.getWeights(i).matrixMultiply(x);
 			x = z.sigmoidElementwise();
 			activations.add(x);
@@ -84,7 +84,7 @@ public class NeuralNet {
 		return activations;
 	}
 	
-	public Matrix backpropagate(Matrix x, Matrix y) throws DimensionMismatchException{
+	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
 		Matrix a = feedForward(x);
 		NeuralNet newNN = new NeuralNet(this.weights);
 		ArrayList<Matrix> activations = feedForwardActivations(x);
@@ -131,7 +131,7 @@ public class NeuralNet {
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
 	 * when the answer vector is not the right size 
 	 */
-	public double cost(Matrix outputs, Matrix expectedOutputs) throws DimensionMismatchException {
+	public double cost(Vector outputs, Vector expectedOutputs) throws DimensionMismatchException {
 		return cost(outputs.getVectorArray(), expectedOutputs.getVectorArray());
 	}
 }
