@@ -139,6 +139,14 @@ public class Matrix {
 		return elementwiseOperation((double z) -> NeuralNet.sigmoid(z));
 	}
 	
+	public Matrix elementwiseAdd(Matrix other) throws DimensionMismatchException {
+		return elementwiseOperation(other, (double x, double y) -> (x + y));
+	}
+	
+	public Matrix elementwiseSubtract(Matrix other) throws DimensionMismatchException {
+		return elementwiseOperation(other, (double x, double y) -> (x - y));
+	}
+	
 	/**
 	 * Return a new matrix, the transpose of this matrix. 
 	 * @return the transpose, which is a new matrix
@@ -160,6 +168,27 @@ public class Matrix {
 		for (int currentRow = 0; currentRow < r; currentRow++) {
 			for (int currentCol = 0; currentCol < c; currentCol++) {
 				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol], other);
+			}
+		}
+		return new Matrix(newMatrix);
+	}
+	
+	public Matrix elementwiseOperation(Matrix other, DoubleBinaryOperator operation) 
+			throws DimensionMismatchException {
+		if (getDimensions() != other.getDimensions()) {
+			String message = "Incompatible matrix dimensions: ";
+			message += this.getDimensions()[0] + "x" + this.getDimensions()[1];
+			message += " and " + other.getDimensions()[0] + "x" + other.getDimensions()[1];
+			throw new DimensionMismatchException(message);
+		}
+		
+		int r = this.matrix.length, c = this.matrix[0].length;
+		double[][] newMatrix = new double[r][c];
+		for (int currentRow = 0; currentRow < r; currentRow++) {
+			for (int currentCol = 0; currentCol < c; currentCol++) {
+				newMatrix[currentRow][currentCol] = operation.applyAsDouble(
+						matrix[currentRow][currentCol], other.getValue(currentRow, currentCol)
+						);
 			}
 		}
 		return new Matrix(newMatrix);
