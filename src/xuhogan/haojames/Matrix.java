@@ -4,7 +4,7 @@ import java.util.function.*;
 import java.text.*;
 
 public class Matrix {
-	private double[][] matrix;
+	protected double[][] matrix;
 	
 	public Matrix()
 	{
@@ -14,23 +14,7 @@ public class Matrix {
 		this.matrix = matrix;
 	}
 	
-	/**
-	 * Creates a matrix that is a vector (i.e., that has only 1 row AND/OR only 1 column)
-	 * @param vector the single-dimensional array that is the vector
-	 * @param isVertical whether the vector is vertical
-	 */
-	public Matrix(double[] vector, boolean isVertical) {
-		if (isVertical) {
-			this.matrix = new double[vector.length][1];
-			for (int i=0; i<vector.length; i++) {
-				this.matrix[i][0] = vector[i];
-			}
-		}
-		else {
-			this.matrix = new double[1][];
-			this.matrix[0] = vector;
-		}
-	}
+
 	
 	public Matrix(int rows, int cols) {
 		this.matrix = new double[rows][cols];
@@ -47,59 +31,13 @@ public class Matrix {
 	public double[][] getArray() {
 		return this.matrix;
 	}
-	
-	public double[] getVectorArray() throws DimensionMismatchException {
-		double[] vector = null;
-		if (this.matrix.length == 1) {
-			vector = this.matrix[0];
-		}
-		
-		else if (this.matrix[0].length == 1) {
-			vector = new double[this.matrix.length];
-			for (int i=0; i<matrix.length; i++) {
-				vector[i] = matrix[i][0];
-			}
-		}
-		
-		else {
-			String message = this.matrix.length + "x" + this.matrix[0].length + " array is not a vector";
-			throw new DimensionMismatchException(message);
-		}
-		
-		return vector;
-	}
-	
-	public boolean isVerticalVector() throws DimensionMismatchException {
-		if (this.matrix.length == 1) {
-			return false;
-		}
-		
-		else if (this.matrix[0].length == 1) {
-			return true;
-		}
-		
-		else {
-			String message = this.matrix.length + "x" + this.matrix[0].length + " array is not a vector";
-			throw new DimensionMismatchException(message);
-		}
-	}
+
 	
 	public int[] getDimensions() {
 		int[] dimensions = new int[2];
 		dimensions[0] = this.matrix.length;
 		dimensions[1] = this.matrix[0].length;
 		return dimensions;
-	}
-	
-	public static Matrix addBiasToVector(Matrix M) throws DimensionMismatchException{
-		double[] vector = M.getVectorArray();
-		double[] withBias = new double[vector.length + 1];
-		withBias[0] = 1;
-		for (int i=1; i<vector.length + 1; i++) {
-			withBias[i] = vector[i-1];
-		}
-		Matrix newM = new Matrix(withBias, M.isVerticalVector());
-		return newM;
 	}
 	
 	/**
