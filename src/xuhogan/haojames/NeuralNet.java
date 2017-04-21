@@ -100,28 +100,40 @@ public class NeuralNet {
 	 * Feeds input into the neural net, like {@code Matrix.feedForward}, but returns the result of
 	 * the cost function J(theta) instead of the result. 
 	 * @param inputs an array of inputs
-	 * @param answerVector the expected answer
+	 * @param expectedOutputs the expected answer
 	 * @return the cost
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
 	 * when the answer vector is not the right size 
 	 */
-	public double cost(double[] inputs, double[] answerVector) throws DimensionMismatchException {
-		if (answerVector.length != layers[layers.length - 1]) {
+	public double cost(double[] outputs, double[] expectedOutputs) throws DimensionMismatchException {
+		if (expectedOutputs.length != layers[layers.length - 1]) {
 			throw new DimensionMismatchException(
-					"Expected vector of length " + Integer.toString(layers[layers.length - 1]) + " but got " + Integer.toString(answerVector.length)
+					"Expected vector of length " + Integer.toString(layers[layers.length - 1]) + " but got " + Integer.toString(expectedOutputs.length)
 					);
 		}
 		
-		double[] hypothesisVector = feedForward(new Matrix(inputs, true)).getVectorArray();		
 		double ret = 0.0;
 		
-		for (int i = 0; i < answerVector.length; i++) {
-			double tmp = (answerVector[i] - hypothesisVector[i]);
+		for (int i = 0; i < expectedOutputs.length; i++) {
+			double tmp = (expectedOutputs[i] - outputs[i]);
 			ret += tmp * tmp;
 		}
 		
 		// TODO: regularise, etc. 
 		
-		return ret; 
+		return Math.sqrt(ret); 
+	}
+	
+	/**
+	 * Feeds input into the neural net, like {@code Matrix.feedForward}, but returns the result of
+	 * the cost function J(theta) instead of the result. 
+	 * @param inputs an array of inputs
+	 * @param expectedOutputs the expected answer
+	 * @return the cost
+	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
+	 * when the answer vector is not the right size 
+	 */
+	public double cost(Matrix outputs, Matrix expectedOutputs) throws DimensionMismatchException {
+		return cost(outputs.getVectorArray(), expectedOutputs.getVectorArray());
 	}
 }
