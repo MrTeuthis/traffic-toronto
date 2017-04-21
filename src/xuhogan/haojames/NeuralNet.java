@@ -50,11 +50,17 @@ public class NeuralNet {
 	public static double sigmoid(double z) {
 		return 1/(1 + Math.exp(-z));
 	}
-	
+
 	public static double sigmoidDerivative(double z) {
 		return Math.exp(-z)/(Math.pow((1 + Math.exp(-z)), 2));
 	}
 	
+	/**
+	 * Feeds inputs into the neural net and returns a result vector
+	 * @param x a vertical vector of inputs
+	 * @return a matrix, which is also a vertical vector, containing the results
+	 * @throws DimensionMismatchException thrown when the input array is not the right size
+	 */
 	public Matrix feedForward(Matrix x) throws DimensionMismatchException {
 		Matrix z = new Matrix();
 		for (int i=0; i<this.layers.length-1; i++) {
@@ -88,5 +94,34 @@ public class NeuralNet {
 			deltas.set(i, activations.get(i));
 		}
 		return null;
+	}
+	
+	/**
+	 * Feeds input into the neural net, like {@code Matrix.feedForward}, but returns the result of
+	 * the cost function J(theta) instead of the result. 
+	 * @param inputs an array of inputs
+	 * @param answerVector the expected answer
+	 * @return the cost
+	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
+	 * when the answer vector is not the right size 
+	 */
+	public double cost(double[] inputs, double[] answerVector) throws DimensionMismatchException {
+		if (answerVector.length != layers[layers.length - 1]) {
+			throw new DimensionMismatchException(
+					"Expected vector of length " + Integer.toString(layers[layers.length - 1]) + " but got " + Integer.toString(answerVector.length)
+					);
+		}
+		
+		double[] hypothesisVector = feedForward(new Matrix(inputs, true)).getVectorArray();		
+		double ret = 0.0;
+		
+		for (int i = 0; i < answerVector.length; i++) {
+			double tmp = (answerVector[i] - hypothesisVector[i]);
+			ret += tmp * tmp;
+		}
+		
+		// TODO: regularise, etc. 
+		
+		return ret; 
 	}
 }
