@@ -13,6 +13,11 @@ public class Matrix {
 		this.matrix = matrix;
 	}
 	
+	/**
+	 * Creates a matrix that is a vector (i.e., that has only 1 row AND/OR only 1 column)
+	 * @param vector the single-dimensional array that is the vector
+	 * @param isVertical whether the vector is vertical
+	 */
 	public Matrix(double[] vector, boolean isVertical) {
 		if (isVertical) {
 			this.matrix = new double[vector.length][1];
