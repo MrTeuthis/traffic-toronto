@@ -5,7 +5,7 @@ import java.util.function.DoubleBinaryOperator;
 public class Matrix {
 	private double[][] matrix;
 	
-	private Matrix(double[][] matrix) {
+	public Matrix(double[][] matrix) {
 		this.matrix = matrix;
 	}
 	
@@ -37,7 +37,10 @@ public class Matrix {
 	 */
 	public Matrix matrixMultiply(Matrix other) throws DimensionMismatchException {
 		if (this.getDimensions()[1] != other.getDimensions()[0]) {
-			throw new DimensionMismatchException();
+			String message = "Incompatible matrix dimensions: ";
+			message += this.getDimensions()[0] + "x" + this.getDimensions()[1];
+			message += " and " + other.getDimensions()[0] + "x" + other.getDimensions()[1];
+			throw new DimensionMismatchException(message);
 		}
 		Matrix product = new Matrix(this.getDimensions()[0], other.getDimensions()[1]);
 		for (int i=0; i<product.getDimensions()[0]; i++) {
