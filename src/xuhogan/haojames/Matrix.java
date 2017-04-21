@@ -9,6 +9,19 @@ public class Matrix {
 		this.matrix = matrix;
 	}
 	
+	public Matrix(double[] vector, boolean isVertical) {
+		if (isVertical) {
+			this.matrix = new double[vector.length][1];
+			for (int i=0; i<vector.length; i++) {
+				this.matrix[i][0] = vector[i];
+			}
+		}
+		else {
+			this.matrix = new double[1][];
+			this.matrix[0] = vector;
+		}
+	}
+	
 	public Matrix(int rows, int cols) {
 		this.matrix = new double[rows][cols];
 	}
@@ -21,11 +34,62 @@ public class Matrix {
 		return this.matrix[row][col];
 	}
 	
+	public double[][] getArray() {
+		return this.matrix;
+	}
+	
+	public double[] getVectorArray() throws DimensionMismatchException {
+		double[] vector = null;
+		if (this.matrix.length == 1) {
+			vector = this.matrix[0];
+		}
+		
+		else if (this.matrix[0].length == 1) {
+			vector = new double[this.matrix.length];
+			for (int i=0; i<matrix.length; i++) {
+				vector[i] = matrix[i][0];
+			}
+		}
+		
+		else {
+			String message = this.matrix.length + "x" + this.matrix[0].length + " array is not a vector";
+			throw new DimensionMismatchException(message);
+		}
+		
+		return vector;
+	}
+	
+	public boolean isVerticalVector() throws DimensionMismatchException {
+		if (this.matrix.length == 1) {
+			return false;
+		}
+		
+		else if (this.matrix[0].length == 1) {
+			return true;
+		}
+		
+		else {
+			String message = this.matrix.length + "x" + this.matrix[0].length + " array is not a vector";
+			throw new DimensionMismatchException(message);
+		}
+	}
+	
 	public int[] getDimensions() {
 		int[] dimensions = new int[2];
 		dimensions[0] = this.matrix.length;
 		dimensions[1] = this.matrix[0].length;
 		return dimensions;
+	}
+	
+	public static Matrix addBiasToVector(Matrix M) throws DimensionMismatchException{
+		double[] vector = M.getVectorArray();
+		double[] withBias = new double[vector.length + 1];
+		withBias[0] = 1;
+		for (int i=1; i<vector.length + 1; i++) {
+			withBias[i] = vector[i-1];
+		}
+		Matrix newM = new Matrix(withBias, M.isVerticalVector());
+		return newM;
 	}
 	
 	/**
@@ -90,7 +154,7 @@ public class Matrix {
 	
 	@Override
 	public String toString() {
-		String display = "";
+		String display = this.getDimensions()[0] + "x" + this.getDimensions()[1] + " matrix:\n";
 		for (int i = 0; i < this.matrix.length; i++) {
 		    for (int j = 0; j < this.matrix[i].length; j++) {
 		        display += this.matrix[i][j] + " ";

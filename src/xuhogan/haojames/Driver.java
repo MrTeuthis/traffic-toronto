@@ -2,9 +2,13 @@ package xuhogan.haojames;
 
 public class Driver {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public static void main(String[] args) throws DimensionMismatchException {
+		int[] layers = {3,4,2};
+		NeuralNet nn = new NeuralNet(layers);
+		System.out.println(nn.getMatrix(0));
+		System.out.println(nn.getMatrix(1));
+		double[] inputs = {1,2,3};
+		System.out.println(nn.feedForward(inputs));
 	}
 
 }

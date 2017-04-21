@@ -26,5 +26,21 @@ public class NeuralNet {
 		return weights;
 	}
 	
+	public Matrix getMatrix(int layer) {
+		return this.weights.get(layer);
+	}
 	
+	public static double sigmoid(double z) {
+		return 1/(1 + Math.exp(-z));
+	}
+	
+	public Matrix feedForward(double[] inputs) throws DimensionMismatchException {
+		Matrix X = new Matrix(inputs, true);
+		for (int i=0; i<this.layers.length-1; i++) {
+			X = Matrix.addBiasToVector(X);
+			Matrix z = this.getMatrix(i).matrixMultiply(X);
+			X = z;
+		}
+		return X;
+	}
 }
