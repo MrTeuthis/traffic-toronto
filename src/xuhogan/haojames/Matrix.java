@@ -1,6 +1,7 @@
 package xuhogan.haojames;
 
 import java.util.function.*;
+import java.text.*;
 
 public class Matrix {
 	private double[][] matrix;
@@ -134,6 +135,10 @@ public class Matrix {
 		return elementwiseOperation((double z) -> NeuralNet.sigmoid(z));
 	}
 	
+	public Matrix sigmoidDerivativeElementwise() {
+		return elementwiseOperation((double z) -> NeuralNet.sigmoidDerivative(z));
+	}
+	
 	/**
 	 * Return a new matrix, the transpose of this matrix. 
 	 * @return the transpose, which is a new matrix
@@ -173,10 +178,11 @@ public class Matrix {
 	
 	@Override
 	public String toString() {
+		//DecimalFormat myFormatter = new DecimalFormat("#.##");
 		String display = this.getDimensions()[0] + "x" + this.getDimensions()[1] + " matrix:\n";
 		for (int i = 0; i < this.matrix.length; i++) {
 		    for (int j = 0; j < this.matrix[i].length; j++) {
-		        display += this.matrix[i][j] + " ";
+		        display += String.format("%6.2f", this.matrix[i][j]);
 		    }
 		    display += "\n";
 		}
