@@ -36,10 +36,11 @@ public class NeuralNet {
 	
 	public Matrix feedForward(double[] inputs) throws DimensionMismatchException {
 		Matrix X = new Matrix(inputs, true);
+		Matrix z = new Matrix();
 		for (int i=0; i<this.layers.length-1; i++) {
 			X = Matrix.addBiasToVector(X);
-			Matrix z = this.getMatrix(i).matrixMultiply(X);
-			X = z;
+			z = this.getMatrix(i).matrixMultiply(X);
+			X = z.sigmoidElementwise();
 		}
 		return X;
 	}

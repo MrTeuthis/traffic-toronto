@@ -1,9 +1,13 @@
 package xuhogan.haojames;
 
-import java.util.function.DoubleBinaryOperator;
+import java.util.function.*;
 
 public class Matrix {
 	private double[][] matrix;
+	
+	public Matrix()
+	{
+	}
 	
 	public Matrix(double[][] matrix) {
 		this.matrix = matrix;
@@ -126,6 +130,10 @@ public class Matrix {
 		return elementwiseOperation(scalar, (double x, double y) -> (x * y)); 
 	}
 	
+	public Matrix sigmoidElementwise() {
+		return elementwiseOperation((double z) -> NeuralNet.sigmoid(z));
+	}
+	
 	/**
 	 * Return a new matrix, the transpose of this matrix. 
 	 * @return the transpose, which is a new matrix
@@ -147,6 +155,17 @@ public class Matrix {
 		for (int currentRow = 0; currentRow < r; currentRow++) {
 			for (int currentCol = 0; currentCol < c; currentCol++) {
 				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol], other);
+			}
+		}
+		return new Matrix(newMatrix);
+	}
+	
+	public Matrix elementwiseOperation(DoubleUnaryOperator operation) {
+		int r = this.matrix.length, c = this.matrix[0].length;
+		double[][] newMatrix = new double[r][c];
+		for (int currentRow = 0; currentRow < r; currentRow++) {
+			for (int currentCol = 0; currentCol < c; currentCol++) {
+				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol]);
 			}
 		}
 		return new Matrix(newMatrix);
