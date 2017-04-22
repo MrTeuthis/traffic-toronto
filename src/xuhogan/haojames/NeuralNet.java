@@ -11,11 +11,22 @@ public class NeuralNet {
 	{
 	}
 	
+	/**
+	 * Constructs a new neural net with the given layer definition. 
+	 * @param layers the layer definition for the neural net. The length of the array
+	 * defines the number of layers, while each integer defines the number of nodes. 
+	 */
 	public NeuralNet(int[] layers) {
 		this.layers = layers;
 		this.weights = initWeights(layers);
 	}
 	
+	/**
+	 * Constructs a new neural net with the given weights definitions. 
+	 * @param weights the list of matrices that define the connections for each layer. 
+	 * The 0th matrix defines the connections between the input layer and the first hidden layer, 
+	 * the 1st matrix defines the connections between the first and second hidden layers, etc. 
+	 */
 	public NeuralNet(ArrayList<Matrix> weights) {
 		this.weights = weights;
 		int[] layers = new int[weights.size() + 1];
@@ -25,6 +36,11 @@ public class NeuralNet {
 		}
 	}
 	
+	/**
+	 * Randomly returns a list of matrices, which can be used to represent the weights for each layer. 
+	 * @param layers the layer definition 
+	 * @return the list of matrices that define the connections between the layers in the net
+	 */
 	public static ArrayList<Matrix> initWeights(int[] layers) {
 		Random rand = new Random();
 		ArrayList<Matrix> weights = new ArrayList<Matrix>();
@@ -39,18 +55,37 @@ public class NeuralNet {
 		return weights;
 	}
 	
+	/**
+	 * Gets the weights for a particular layer.
+	 * @param layer the layer
+	 * @return the weights
+	 */
 	public Matrix getWeights(int layer) {
 		return this.weights.get(layer);
 	}
 	
+	/**
+	 * Gets all the weights. 
+	 * @return all the weights in the neural net
+	 */
 	public ArrayList<Matrix> getWeights() {
 		return this.weights;
 	}
 	
+	/**
+	 * Computes the sigmoid function, 1/(1 + exp(-z)).
+	 * @param z the argument
+	 * @return the result of the sigmoid funciton
+	 */
 	public static double sigmoid(double z) {
 		return 1/(1 + Math.exp(-z));
 	}
-
+	
+	/**
+	 * Computes the derivative of the sigmoid function at z, the argument. 
+	 * @param z the argument
+	 * @return the derivative of the sigmoid function at z
+	 */
 	public static double sigmoidDerivative(double z) {
 		//return Math.exp(-z)/(Math.pow((1 + Math.exp(-z)), 2));
 		return z * (1-z);
@@ -72,6 +107,13 @@ public class NeuralNet {
 		return x;
 	}
 	
+	/**
+	 * Feeds inputs into the neural net and returns activations 
+	 * TODO this javadoc. idk what's happening here tbh
+	 * @param x a vertical vector of inputs
+	 * @return the activations
+	 * @throws DimensionMismatchException thrown when the input vector is not the right size
+	 */
 	public ArrayList<Vector> feedForwardActivations(Vector x) throws DimensionMismatchException {
 		ArrayList<Vector> activations = new ArrayList<Vector>();
 		Matrix z = new Matrix();
@@ -87,7 +129,7 @@ public class NeuralNet {
 	}	
 
 	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
-		return null;
+		return null; // TODO this
 	}
 	
 	/**
