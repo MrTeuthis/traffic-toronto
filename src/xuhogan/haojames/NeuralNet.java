@@ -66,7 +66,7 @@ public class NeuralNet {
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = Vector.addBias(x);
 			z = this.getWeights(i).matrixMultiply(x.toMatrix(true)).toVector();
-			x = z.toMatrix().sigmoidElementwise().toVector();
+			x = z.toMatrix().sigmoidElementwise().toVector(true);
 		}
 		return x;
 	}
