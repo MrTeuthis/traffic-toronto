@@ -61,24 +61,24 @@ public class NeuralNet {
 	 * @return a matrix, which is also a vertical vector, containing the results
 	 * @throws DimensionMismatchException thrown when the input array is not the right size
 	 */
-	public Matrix feedForward(Vector x) throws DimensionMismatchException {
+	public Vector feedForward(Vector x) throws DimensionMismatchException {
 		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = Vector.addBias(x);
-			z = this.getWeights(i).matrixMultiply(x);
-			x = z.sigmoidElementwise();
+			z = this.getWeights(i).matrixMultiply(x).toVector();
+			x = z.sigmoidElementwise().toVector();
 		}
 		return x;
 	}
 	
 	public ArrayList<Vector> feedForwardActivations(Vector x) throws DimensionMismatchException {
 		ArrayList<Vector> activations = new ArrayList<Vector>();
-		Matrix z = new Matrix();
+		Vector z = new Vector();
 		activations.add(x);
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = Vector.addBias(x);
-			z = this.getWeights(i).matrixMultiply(x);
-			x = z.sigmoidElementwise();
+			z = this.getWeights(i).matrixMultiply(x).toVector();
+			x = z.sigmoidElementwise().toVector();
 			activations.add(x);
 		}
 		return activations;
@@ -87,8 +87,8 @@ public class NeuralNet {
 	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
 		Matrix a = feedForward(x);
 		NeuralNet newNN = new NeuralNet(this.weights);
-		ArrayList<Matrix> activations = feedForwardActivations(x);
-		ArrayList<Matrix> deltas = new ArrayList<Matrix>(activations.size());
+		ArrayList<Vector> activations = feedForwardActivations(x);
+		ArrayList<Vector> deltas = new ArrayList<Vector>(activations.size());
 		//deltas.set(activations.size()-1, activations.get(activations.size()-1).matrixSubtract(y));
 		for (int i=activations.size()-2; i>=1; i--) {
 			deltas.set(i, activations.get(i));
