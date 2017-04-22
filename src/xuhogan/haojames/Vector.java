@@ -49,8 +49,27 @@ public class Vector extends Matrix {
 		}
 	}
 	
-	public static Vector addBias(Vector M) {
-		return null;
+	public double[] getOneDimensionalArray() {
+		if (this.getOrientation() == Orientation.HORIZONTAL) {
+			return this.matrix[0];
+		}
+		else {
+			double[] vector = new double[this.matrix.length];
+			for (int i=0; i<this.matrix.length; i++) {
+				vector[i] = this.matrix[i][0];
+			}
+			return vector;
+		}
+	}
+	
+	public Vector addBias() {
+		double[] vector = this.getOneDimensionalArray();
+		double[] vectorWithBias = new double[vector.length + 1];
+		vectorWithBias[0] = 1;
+		for (int i=1; i<vectorWithBias.length; i++) {
+			vectorWithBias[i] = vector[i-1];
+		}
+		return new Vector(vector, this.getOrientation());
 	}
 	
 	public boolean isVertical() {
