@@ -11,7 +11,7 @@ public class Vector {
 	}
 	
 	/**
-	 * Creates a vector (i.e., that has only 1 row AND/OR only 1 column)
+	 * Creates a vector (i.e., that has only 1 row)
 	 * @param vector the single-dimensional array that is the vector
 	 */
 	public Vector(double[] vector) {
@@ -100,5 +100,10 @@ public class Vector {
 	
 	public Vector elementwiseSubtract(Vector other) throws DimensionMismatchException {
 		return elementwiseOperation(other, (double x, double y) -> (x - y));
+	}
+	
+	@Override
+	public String toString() {
+		return toMatrix().toString();
 	}
 }

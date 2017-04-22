@@ -58,14 +58,14 @@ public class NeuralNet {
 	/**
 	 * Feeds inputs into the neural net and returns a result vector
 	 * @param x a vertical vector of inputs
-	 * @return a matrix, which is also a vertical vector, containing the results
+	 * @return a vertical vector, containing the results
 	 * @throws DimensionMismatchException thrown when the input array is not the right size
 	 */
 	public Vector feedForward(Vector x) throws DimensionMismatchException {
 		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = Vector.addBias(x);
-			z = this.getWeights(i).matrixMultiply(x.toMatrix()).toVector();
+			z = this.getWeights(i).matrixMultiply(x.toMatrix(true)).toVector();
 			x = z.toMatrix().sigmoidElementwise().toVector();
 		}
 		return x;
@@ -86,7 +86,7 @@ public class NeuralNet {
 	}
 	
 	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
-		Matrix a = feedForward(x);
+		Vector a = feedForward(x);
 		NeuralNet newNN = new NeuralNet(this.weights);
 		ArrayList<Vector> activations = feedForwardActivations(x);
 		ArrayList<Vector> deltas = new ArrayList<Vector>(activations.size());

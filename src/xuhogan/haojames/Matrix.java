@@ -167,16 +167,42 @@ public class Matrix {
 	 * @throws DimensionMismatchException thrown when the matrix isn't a vector
 	 */
 	public Vector toVector() throws DimensionMismatchException {
+		if (isVector()) {
+			double[] ret = flattenMatrixArray();
+			return new Vector(ret);
+		}
+		else {
+			throw new DimensionMismatchException("not a vector");
+		}
+	}
+	
+	/**
+	 * Only to be called on matrices that are vectors. 
+	 * @return
+	 */
+	private double[] flattenMatrixArray() {
+		if (!isVector()) {
+			throw new IllegalArgumentException();
+		}
+		double[] ret = new double[Math.max(matrix.length, matrix[0].length)];
 		if (matrix.length == 1) {
-			return new Vector(matrix[0]);
+			ret = matrix[0];
 		}
-		else if (matrix[0].length == 1) {
-			double[] things = new double[matrix.length];
-			for (int i = 0; i < matrix.length; i++) {
-				things[i] = matrix[i][0];
+		else {
+			for (int i = 0; i < matrix[i].length; i++) {
+				ret[i] = matrix[i][0];
 			}
-			return new Vector(things);
 		}
-		throw new DimensionMismatchException("not a vector");
+		return ret;
+	}
+	
+	public boolean isVector() {
+		return isHorizontalVector() || isVerticalVector();
+	}
+	public boolean isHorizontalVector() {
+		return matrix.length == 1;
+	}
+	public boolean isVerticalVector() {
+		return matrix[0].length == 1;
 	}
 }
