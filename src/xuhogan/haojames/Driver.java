@@ -8,7 +8,7 @@ public class Driver {
 		System.out.println(nn.getWeights(0));
 		System.out.println(nn.getWeights(1));
 		double[] inputs = {1,2,3};
-		Matrix x = new Matrix(inputs, true);
+		Vector x = new Vector(inputs, true);
 		System.out.println(nn.feedForward(x));
 	}
 

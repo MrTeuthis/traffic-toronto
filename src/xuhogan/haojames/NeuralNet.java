@@ -62,64 +62,77 @@ public class NeuralNet {
 	 * @return a matrix, which is also a vertical vector, containing the results
 	 * @throws DimensionMismatchException thrown when the input array is not the right size
 	 */
-	public Matrix feedForward(Matrix x) throws DimensionMismatchException {
-		Matrix z = new Matrix();
+	public Vector feedForward(Vector x) throws DimensionMismatchException {
+		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = Matrix.addBiasToVector(x);
-			z = this.getWeights(i).matrixMultiply(x);
-			x = z.sigmoidElementwise();
+			x = Vector.addBias(x);
+			z = this.getWeights(i).matrixMultiply(x).toVector();
+			x = z.sigmoidElementwise().toVector();
 		}
 		return x;
 	}
 	
-	public ArrayList<Matrix> feedForwardActivations(Matrix x) throws DimensionMismatchException {
-		ArrayList<Matrix> activations = new ArrayList<Matrix>();
-		Matrix z = new Matrix();
+	public ArrayList<Vector> feedForwardActivations(Vector x) throws DimensionMismatchException {
+		ArrayList<Vector> activations = new ArrayList<Vector>();
+		Vector z = new Vector();
 		activations.add(x);
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = Matrix.addBiasToVector(x);
-			z = this.getWeights(i).matrixMultiply(x);
-			x = z.sigmoidElementwise();
+			x = Vector.addBias(x);
+			z = this.getWeights(i).matrixMultiply(x).toVector();
+			x = z.sigmoidElementwise().toVector();
 			activations.add(x);
 		}
 		return activations;
-	}
-	
-	//X includes bias
-	public Matrix backpropagate(ArrayList<Matrix> X, ArrayList<Matrix> Y) throws DimensionMismatchException{
-		for (int i=0; i<X.size(); i++) {
-			Matrix x = X.get(i);
-			Matrix y = Y.get(i);
+	}	
+
+	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
+		Matrix a = feedForward(x);
+		NeuralNet newNN = new NeuralNet(this.weights);
+		ArrayList<Vector> activations = feedForwardActivations(x);
+		ArrayList<Vector> deltas = new ArrayList<Vector>(activations.size());
+		//deltas.set(activations.size()-1, activations.get(activations.size()-1).matrixSubtract(y));
+		for (int i=activations.size()-2; i>=1; i--) {
+			deltas.set(i, activations.get(i));
 		}
 		return null;
 	}
 	
 	/**
-	 * Feeds input into the neural net, like {@code Matrix.feedForward}, but returns the result of
-	 * the cost function J(theta) instead of the result. 
+	 * Returns the result of the cost function J(theta). 
 	 * @param inputs an array of inputs
-	 * @param answerVector the expected answer
+	 * @param expectedOutputs the expected answer
 	 * @return the cost
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
 	 * when the answer vector is not the right size 
 	 */
-	public double cost(double[] inputs, double[] answerVector) throws DimensionMismatchException {
-		if (answerVector.length != layers[layers.length - 1]) {
+	public double cost(double[] outputs, double[] expectedOutputs) throws DimensionMismatchException {
+		if (expectedOutputs.length != layers[layers.length - 1]) {
 			throw new DimensionMismatchException(
-					"Expected vector of length " + Integer.toString(layers[layers.length - 1]) + " but got " + Integer.toString(answerVector.length)
+					"Expected vector of length " + Integer.toString(layers[layers.length - 1]) + " but got " + Integer.toString(expectedOutputs.length)
 					);
 		}
 		
-		double[] hypothesisVector = feedForward(new Matrix(inputs, true)).getVectorArray();		
 		double ret = 0.0;
 		
-		for (int i = 0; i < answerVector.length; i++) {
-			double tmp = (answerVector[i] - hypothesisVector[i]);
+		for (int i = 0; i < expectedOutputs.length; i++) {
+			double tmp = (expectedOutputs[i] - outputs[i]);
 			ret += tmp * tmp;
 		}
 		
 		// TODO: regularise, etc. 
 		
-		return ret; 
+		return Math.sqrt(ret); 
+	}
+	
+	/**
+	 * Returns the result of the cost function J(theta). 
+	 * @param inputs an array of inputs
+	 * @param expectedOutputs the expected answer
+	 * @return the cost
+	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
+	 * when the answer vector is not the right size 
+	 */
+	public double cost(Vector outputs, Vector expectedOutputs) throws DimensionMismatchException {
+		return cost(outputs.getVectorArray(), expectedOutputs.getVectorArray());
 	}
 }
