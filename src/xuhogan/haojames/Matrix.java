@@ -1,5 +1,6 @@
 package xuhogan.haojames;
 
+import java.util.Arrays;
 import java.util.function.*;
 import java.text.*;
 
@@ -13,8 +14,6 @@ public class Matrix {
 	public Matrix(double[][] matrix) {
 		this.matrix = matrix;
 	}
-	
-
 	
 	public Matrix(int rows, int cols) {
 		this.matrix = new double[rows][cols];
@@ -62,7 +61,12 @@ public class Matrix {
 				}
 			}
 		}
-		return product;
+		try {
+			return new Vector(product);
+		}
+		catch (DimensionMismatchException e) {
+			return product;
+		}
 	}
 	
 	/**
@@ -102,7 +106,12 @@ public class Matrix {
 				newMatrix[currentCol][currentRow] = matrix[currentRow][currentCol];
 			}
 		}
-		return new Matrix(newMatrix);
+		try {
+			return new Vector(newMatrix);
+		}
+		catch (DimensionMismatchException e) {
+			return new Matrix(newMatrix);
+		}
 	}
 	
 	public Matrix elementwiseOperation(double other, DoubleBinaryOperator operation) {
@@ -113,12 +122,17 @@ public class Matrix {
 				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol], other);
 			}
 		}
-		return new Matrix(newMatrix);
+		try {
+			return new Vector(newMatrix);
+		}
+		catch (DimensionMismatchException e) {
+			return new Matrix(newMatrix);
+		}
 	}
 	
 	public Matrix elementwiseOperation(Matrix other, DoubleBinaryOperator operation) 
 			throws DimensionMismatchException {
-		if (getDimensions() != other.getDimensions()) {
+		if (!Arrays.equals(this.getDimensions(), other.getDimensions())) {
 			String message = "Incompatible matrix dimensions: ";
 			message += this.getDimensions()[0] + "x" + this.getDimensions()[1];
 			message += " and " + other.getDimensions()[0] + "x" + other.getDimensions()[1];
@@ -134,7 +148,12 @@ public class Matrix {
 						);
 			}
 		}
-		return new Matrix(newMatrix);
+		try {
+			return new Vector(newMatrix);
+		}
+		catch (DimensionMismatchException e) {
+			return new Matrix(newMatrix);
+		}
 	}
 	
 	public Matrix elementwiseOperation(DoubleUnaryOperator operation) {
@@ -145,12 +164,16 @@ public class Matrix {
 				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol]);
 			}
 		}
-		return new Matrix(newMatrix);
+		try {
+			return new Vector(newMatrix);
+		}
+		catch (DimensionMismatchException e) {
+			return new Matrix(newMatrix);
+		}
 	}
 	
 	@Override
 	public String toString() {
-		//DecimalFormat myFormatter = new DecimalFormat("#.##");
 		String display = this.getDimensions()[0] + "x" + this.getDimensions()[1] + " matrix:\n";
 		for (int i = 0; i < this.matrix.length; i++) {
 		    for (int j = 0; j < this.matrix[i].length; j++) {
@@ -161,56 +184,11 @@ public class Matrix {
 		return display;
 	}
 	
-	/**
-	 * Returns this matrix, as a vector
-	 * @return a vector
-	 * @throws DimensionMismatchException thrown when the matrix isn't a vector
-	 */
-	public Vector toVector() throws DimensionMismatchException {
-		if (isVector()) {
-			double[] ret = flattenMatrixArray();
-			return new Vector(ret);
-		}
-		else {
-			throw new DimensionMismatchException("not a vector");
-		}
-	}
-	
-	/**
-	 * Only to be called on matrices that are vectors. 
-	 * @return
-	 */
-	private double[] flattenMatrixArray() {
-		if (!isVector()) {
-			throw new IllegalArgumentException();
-		}
-		double[] ret = new double[Math.max(matrix.length, matrix[0].length)];
-		if (matrix.length == 1) {
-			ret = matrix[0];
-		}
-		else {
-			for (int i = 0; i < matrix[i].length; i++) {
-				ret[i] = matrix[i][0];
-			}
-		}
-		return ret;
-	}
-	
-	public boolean isVector() {
-		return isHorizontalVector() || isVerticalVector();
-	}
-	public boolean isHorizontalVector() {
-		return matrix.length == 1;
-	}
-	public boolean isVerticalVector() {
-		return matrix[0].length == 1;
-	}
-	
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Matrix) {
 			Matrix m_other = (Matrix)other;
-			return matrix == m_other.matrix || transpose().matrix == m_other.matrix;
+			return matrix == m_other.matrix;
 		}
 		return false;
 	}
