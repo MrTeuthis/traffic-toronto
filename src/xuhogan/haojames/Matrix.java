@@ -90,15 +90,6 @@ public class Matrix {
 		return elementwiseOperation(other, (double x, double y) -> (x - y));
 	}
 	
-	public int vectorLength() throws DimensionMismatchException{
-		if (this.isVerticalVector()) {
-			return this.getDimensions()[0];
-		}
-		else {
-			return this.getDimensions()[1];
-		}
-	}
-	
 	/**
 	 * Return a new matrix, the transpose of this matrix. 
 	 * @return the transpose, which is a new matrix

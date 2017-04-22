@@ -86,14 +86,6 @@ public class NeuralNet {
 	}	
 
 	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
-		Matrix a = feedForward(x);
-		NeuralNet newNN = new NeuralNet(this.weights);
-		ArrayList<Vector> activations = feedForwardActivations(x);
-		ArrayList<Vector> deltas = new ArrayList<Vector>(activations.size());
-		//deltas.set(activations.size()-1, activations.get(activations.size()-1).matrixSubtract(y));
-		for (int i=activations.size()-2; i>=1; i--) {
-			deltas.set(i, activations.get(i));
-		}
 		return null;
 	}
 	

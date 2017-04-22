@@ -27,7 +27,7 @@ public class Vector extends Matrix {
 		return Math.max(matrix.length, matrix[0].length);
 	}
 	
-	public boolean isVerticalVector() {
+	public boolean isVertical() {
 		if (this.matrix.length == 1) {
 			return false;
 		}
@@ -58,7 +58,7 @@ public class Vector extends Matrix {
 		for (int i=1; i<vector.length + 1; i++) {
 			withBias[i] = vector[i-1];
 		}
-		Vector newM = new Vector(withBias, M.isVerticalVector());
+		Vector newM = new Vector(withBias, M.isVertical());
 		return newM;
 	}
 }
