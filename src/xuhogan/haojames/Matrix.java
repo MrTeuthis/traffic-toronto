@@ -10,29 +10,56 @@ public class Matrix {
 	{
 	}
 	
+	/**
+	 * Creates a new matrix. 
+	 * @param matrix the numbers inside the matrix
+	 */
 	public Matrix(double[][] matrix) {
 		this.matrix = matrix;
 	}
 	
-
-	
+	/**
+	 * Creates a new zero matrix of the given dimensions,
+	 * @param rows the number of rows
+	 * @param cols the number of columns
+	 */ 
 	public Matrix(int rows, int cols) {
 		this.matrix = new double[rows][cols];
 	}
 	
+	/**
+	 * Sets the value of a particular cell in the matrix. 
+	 * @param row the row of the cell
+	 * @param col the column of the cell 
+	 * @param value the new value of the cell
+	 */
 	public void setValue(int row, int col, double value) {
 		this.matrix[row][col] = value;
 	}
 	
+	/**
+	 * Gets the value of a particular cell in the matrix. 
+	 * @param row the row of the cell
+	 * @param col the column of the cell
+	 * @return the value of the cell
+	 */
 	public double getValue(int row, int col) {
 		return this.matrix[row][col];
 	}
 	
+	/**
+	 * Gets the underlying array of the matrix. 
+	 * @return the underlying array of the matrix
+	 */
 	public double[][] getArray() {
 		return this.matrix;
 	}
 
-	
+	/**
+	 * Gets the dimensions of the matrix. 
+	 * @return two integers in the form of an array. The first result is the number of rows, 
+	 * and the second result is the number of columns. 
+	 */
 	public int[] getDimensions() {
 		int[] dimensions = new int[2];
 		dimensions[0] = this.matrix.length;
@@ -74,18 +101,38 @@ public class Matrix {
 		return elementwiseOperation(scalar, (double x, double y) -> (x * y)); 
 	}
 	
+	/**
+	 * Applies the sigmoid to each individual cell of the old matrix. 
+	 * @return a new matrix, whose cells are the sigmoid of the corresponding cells of the old matrix
+	 */
 	public Matrix sigmoidElementwise() {
 		return elementwiseOperation((double z) -> NeuralNet.sigmoid(z));
 	}
 	
+	/**
+	 * Applies the derivative of the sigmoid to each individual cell of the old matrix. 
+	 * @return a new matrix, whose cells are the derivative of the sigmoid of the corresponding cells of the old matrix
+	 */
 	public Matrix sigmoidDerivativeElementwise() {
 		return elementwiseOperation((double z) -> NeuralNet.sigmoidDerivative(z));
 	}
 	
+	/**
+	 * Adds the corresponding elements of two matrices together.
+	 * @param other the other matrix
+	 * @return a new matrix, whose cells are the sum of the corresponding cells of the old matrices
+	 * @throws DimensionMismatchException thrown when the two matrices are not the same size
+	 */
 	public Matrix elementwiseAdd(Matrix other) throws DimensionMismatchException {
 		return elementwiseOperation(other, (double x, double y) -> (x + y));
 	}
 	
+	/**
+	 * Subtracts the corresponding elements of two matrices together.
+	 * @param other the other matrix
+	 * @return a new matrix, whose cells are the difference of the corresponding cells of the old matrices
+	 * @throws DimensionMismatchException thrown when the two matrices are not the same size
+	 */
 	public Matrix elementwiseSubtract(Matrix other) throws DimensionMismatchException {
 		return elementwiseOperation(other, (double x, double y) -> (x - y));
 	}
@@ -105,6 +152,12 @@ public class Matrix {
 		return new Matrix(newMatrix);
 	}
 	
+	/**
+	 * Performs an elementwise operation. 
+	 * @param other the other argument of the elementwise operation. 
+	 * @param operation the operation
+	 * @return a new matrix, the result of the elementwise operation. 
+	 */
 	public Matrix elementwiseOperation(double other, DoubleBinaryOperator operation) {
 		int r = this.matrix.length, c = this.matrix[0].length;
 		double[][] newMatrix = new double[r][c];
@@ -116,6 +169,13 @@ public class Matrix {
 		return new Matrix(newMatrix);
 	}
 	
+	/**
+	 * Performs an elementwise operation. 
+	 * @param other the other argument of the elementwise operation. 
+	 * @param operation the operation
+	 * @return a new matrix, the result of the elementwise operation. 
+	 * @throws DimensionMismatchException thrown when the matrices are not the same size
+	 */
 	public Matrix elementwiseOperation(Matrix other, DoubleBinaryOperator operation) 
 			throws DimensionMismatchException {
 		if (getDimensions() != other.getDimensions()) {
@@ -137,6 +197,11 @@ public class Matrix {
 		return new Matrix(newMatrix);
 	}
 	
+	/**
+	 * Performs an unary elementwise operation.
+	 * @param operation the operation
+	 * @return a new matrix, the result of the elementwise operation. 
+	 */
 	public Matrix elementwiseOperation(DoubleUnaryOperator operation) {
 		int r = this.matrix.length, c = this.matrix[0].length;
 		double[][] newMatrix = new double[r][c];
