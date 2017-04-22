@@ -65,9 +65,9 @@ public class NeuralNet {
 	public Vector feedForward(Vector x) throws DimensionMismatchException {
 		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = Vector.addBias(x);
-			z = this.getWeights(i).matrixMultiply(x.toMatrix(true)).toVector();
-			x = z.toMatrix().sigmoidElementwise().toVector();
+			x = x.addBias();
+			z = (Vector) this.getWeights(i).matrixMultiply(x);
+			x = (Vector) z.sigmoidElementwise();
 		}
 		return x;
 	}
@@ -77,10 +77,10 @@ public class NeuralNet {
 		Matrix z = new Matrix();
 		activations.add(x);
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = Vector.addBias(x);
+			x = x.addBias();
 			z = this.getWeights(i).matrixMultiply(x.toMatrix());
 			
-			x = z.sigmoidElementwise().toVector();
+			x = (Vector) z.sigmoidElementwise();
 			activations.add(x);
 		}
 		return activations;
@@ -126,6 +126,6 @@ public class NeuralNet {
 	 * when the answer vector is not the right size 
 	 */
 	public double cost(Vector outputs, Vector expectedOutputs) throws DimensionMismatchException {
-		return cost(outputs.getVectorArray(), expectedOutputs.getVectorArray());
+		return cost(outputs.getOneDimensionalArray(), expectedOutputs.getOneDimensionalArray());
 	}
 }
