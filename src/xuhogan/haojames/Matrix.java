@@ -168,14 +168,14 @@ public class Matrix {
 	 */
 	public Vector toVector() throws DimensionMismatchException {
 		if (matrix.length == 1) {
-			return new Vector(matrix[0], false);
+			return new Vector(matrix[0]);
 		}
 		else if (matrix[0].length == 1) {
 			double[] things = new double[matrix.length];
 			for (int i = 0; i < matrix.length; i++) {
 				things[i] = matrix[i][0];
 			}
-			return new Vector(things, false);
+			return new Vector(things);
 		}
 		throw new DimensionMismatchException("not a vector");
 	}

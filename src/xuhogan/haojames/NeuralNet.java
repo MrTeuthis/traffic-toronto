@@ -65,19 +65,20 @@ public class NeuralNet {
 		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = Vector.addBias(x);
-			z = this.getWeights(i).matrixMultiply(x).toVector();
-			x = z.sigmoidElementwise().toVector();
+			z = this.getWeights(i).matrixMultiply(x.toMatrix()).toVector();
+			x = z.toMatrix().sigmoidElementwise().toVector();
 		}
 		return x;
 	}
 	
 	public ArrayList<Vector> feedForwardActivations(Vector x) throws DimensionMismatchException {
 		ArrayList<Vector> activations = new ArrayList<Vector>();
-		Vector z = new Vector();
+		Matrix z = new Matrix();
 		activations.add(x);
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = Vector.addBias(x);
-			z = this.getWeights(i).matrixMultiply(x).toVector();
+			z = this.getWeights(i).matrixMultiply(x.toMatrix());
+			
 			x = z.sigmoidElementwise().toVector();
 			activations.add(x);
 		}
