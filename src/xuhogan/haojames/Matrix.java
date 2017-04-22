@@ -205,4 +205,13 @@ public class Matrix {
 	public boolean isVerticalVector() {
 		return matrix[0].length == 1;
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Matrix) {
+			Matrix m_other = (Matrix)other;
+			return matrix == m_other.matrix || transpose().matrix == m_other.matrix;
+		}
+		return false;
+	}
 }

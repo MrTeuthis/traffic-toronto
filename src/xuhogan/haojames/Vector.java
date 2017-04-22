@@ -106,4 +106,13 @@ public class Vector {
 	public String toString() {
 		return toMatrix().toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Vector) {
+			Vector v_obj = (Vector)obj;
+			return vector == v_obj.vector;
+		}
+		return false; 
+	}
 }
