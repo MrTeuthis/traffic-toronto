@@ -103,7 +103,7 @@ public class Matrix {
 	 * @param scalar a scalar
 	 * @return the product, which is a new matrix
 	 */
-	public Matrix scalarMultiply(double scalar) {
+	public Matrix elementwiseScalarMultiply(double scalar) {
 		return elementwiseOperation(scalar, (double x, double y) -> (x * y)); 
 	}
 	
@@ -111,7 +111,7 @@ public class Matrix {
 	 * Applies the sigmoid to each individual cell of the old matrix. 
 	 * @return a new matrix, whose cells are the sigmoid of the corresponding cells of the old matrix
 	 */
-	public Matrix sigmoidElementwise() {
+	public Matrix elementwiseSigmoid() {
 		return elementwiseOperation((double z) -> NeuralNet.sigmoid(z));
 	}
 	
@@ -119,7 +119,7 @@ public class Matrix {
 	 * Applies the derivative of the sigmoid to each individual cell of the old matrix. 
 	 * @return a new matrix, whose cells are the derivative of the sigmoid of the corresponding cells of the old matrix
 	 */
-	public Matrix sigmoidDerivativeElementwise() {
+	public Matrix elementwiseSigmoidDerivative() {
 		return elementwiseOperation((double z) -> NeuralNet.sigmoidDerivative(z));
 	}
 	
