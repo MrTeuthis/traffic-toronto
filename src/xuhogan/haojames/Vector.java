@@ -41,11 +41,11 @@ public class Vector extends Matrix {
 	}
 	
 	public Orientation getOrientation() {
-		if (this.getDimensions()[0] == 1) {
-			return Orientation.HORIZONTAL;
+		if (this.matrix[0].length == 1) {
+			return Orientation.VERTICAL;
 		}
 		else {
-			return Orientation.VERTICAL;
+			return Orientation.HORIZONTAL;
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class Vector extends Matrix {
 		for (int i=1; i<vectorWithBias.length; i++) {
 			vectorWithBias[i] = vector[i-1];
 		}
-		return new Vector(vector, this.getOrientation());
+		return new Vector(vectorWithBias, this.getOrientation());
 	}
 	
 	public boolean isVertical() {

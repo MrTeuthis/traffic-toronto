@@ -98,6 +98,9 @@ public class NeuralNet {
 	 * @throws DimensionMismatchException thrown when the input array is not the right size
 	 */
 	public Vector feedForward(Vector x) throws DimensionMismatchException {
+		if (x.getOrientation() == Vector.Orientation.HORIZONTAL) {
+			throw new DimensionMismatchException("Input vector must be vertical");
+		}
 		Vector z = new Vector();
 		for (int i=0; i<this.layers.length-1; i++) {
 			x = x.addBias();
@@ -114,22 +117,62 @@ public class NeuralNet {
 	 * @return the activations
 	 * @throws DimensionMismatchException thrown when the input vector is not the right size
 	 */
-	public ArrayList<Vector> feedForwardActivations(Vector x) throws DimensionMismatchException {
-		ArrayList<Vector> activations = new ArrayList<Vector>();
-		Matrix z = new Matrix();
-		activations.add(x);
+	public ArrayList<Matrix> feedForwardActivations(Matrix X) throws DimensionMismatchException {
+		ArrayList<Matrix> activations = new ArrayList<Matrix>();
+		Matrix Z = new Matrix();
+		activations.add(X);
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = x.addBias();
-			z = this.getWeights(i).matrixMultiply(x.toMatrix());
+			X = X.addBias();
+			Z = this.getWeights(i).matrixMultiply(X);
 			
-			x = (Vector) z.sigmoidElementwise();
-			activations.add(x);
+			Z = Z.sigmoidElementwise();
+			activations.add(X);
 		}
 		return activations;
 	}	
 
-	public Matrix backpropagate(Vector x, Vector y) throws DimensionMismatchException{
-		return null; // TODO this
+	public void backpropagate(Matrix X, Matrix Y) throws DimensionMismatchException{
+		//Feedforward
+		ArrayList<Matrix> activations = this.feedForwardActivations(X);
+		//Set up deltas
+		ArrayList<Matrix> deltas = new ArrayList<Matrix>();
+		for (int i=0; i<activations.size(); i++) {
+			deltas.add(null);
+		}
+		//Calculate delta for last layer
+		deltas.set(activations.size() - 1, Y.elementwiseSubtract(activations.get(activations.size() - 1)));
+		//Iterate backwards to calculate other deltas
+		for (int layer=activations.size()-2; layer >= 1; layer--) {
+			//Calculate z
+			Matrix Z = this.weights.get(layer-1).matrixMultiply(activations.get(layer-1).addBias());
+			//Calculate ThetaNoBias
+			Matrix Theta = this.weights.get(layer);
+			double[][] noBias = new double[Theta.getDimensions()[0]][Theta.getDimensions()[1]-1];
+			for (int i=0; i<noBias.length; i++) {
+				for (int j=0; j<noBias[0].length; j++) {
+					noBias[i][j] = Theta.getValue(i, j+1);
+				}
+			}
+			Matrix ThetaNoBias = new Matrix(noBias);
+			//Calculate delta
+			deltas.set(layer, deltas.get(layer + 1).transpose().matrixMultiply(ThetaNoBias));
+			deltas.set(layer, deltas.get(layer).transpose().elementwiseOperation(Z.sigmoidDerivativeElementwise(), (a, b) -> a*b));
+		}
+		//Set up Deltas
+		ArrayList<Matrix> Deltas = new ArrayList<Matrix>();
+		for (int layer=0; layer<this.weights.size(); layer++) {
+			Deltas.add(new Matrix(this.weights.get(layer).getDimensions()[0], this.weights.get(layer).getDimensions()[1]));
+		}
+		//Calculate Deltas
+		for (int layer=0; layer<activations.size() - 1; layer++) {
+			Deltas.set(layer, deltas.get(layer + 1).matrixMultiply(activations.get(layer).transpose()));
+		}
+		for (Matrix layer: Deltas) {
+			System.out.println(layer);
+		}
+		//Calcuate partial derivatives of Thetas
+		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>();
+		
 	}
 	
 	/**

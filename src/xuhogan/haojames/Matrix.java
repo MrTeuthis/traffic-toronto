@@ -48,6 +48,12 @@ public class Matrix {
 		return this.matrix[row][col];
 	}
 	
+	public void fill(double value) {
+		for (int i=0; i<this.matrix.length; i++) {
+			Arrays.fill(this.matrix[i], value);
+		}
+	}
+	
 	/**
 	 * Gets the underlying array of the matrix. 
 	 * @return the underlying array of the matrix
@@ -237,6 +243,17 @@ public class Matrix {
 		catch (DimensionMismatchException e) {
 			return new Matrix(newMatrix);
 		}
+	}
+	
+	public Matrix addBias() {
+		double[][] newMatrix = new double[this.matrix.length][this.matrix[0].length + 1];
+		for (int row=0; row<newMatrix.length; row++) {
+			newMatrix[row][0] = 1;
+			for (int col=1; col<newMatrix[0].length; col++) {
+				newMatrix[row][col] = this.matrix[row][col-1];
+			}
+		}
+		return new Matrix(newMatrix);
 	}
 	
 	@Override
