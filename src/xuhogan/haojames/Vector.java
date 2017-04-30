@@ -1,8 +1,5 @@
 package xuhogan.haojames;
 
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleUnaryOperator;
-
 public class Vector extends Matrix {
 	
 	public Vector() {
