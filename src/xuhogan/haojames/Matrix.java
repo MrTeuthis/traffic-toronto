@@ -77,9 +77,9 @@ public class Matrix {
 	/**
 	 * Return a new matrix, the product of this and other. In other words, 
 	 * (this)(other), which is different from (other)(this). 
-	 * @param other another matrix that has the same height and width as the transpose
-	 * 		of this matrix
+	 * @param other another matrix whose height is the same as this matrix's width
 	 * @return the matrix product, which is a new matrix
+	 * @throws DimensionMismatchException thrown when the matrices have incompatible dimensions
 	 */
 	public Matrix matrixMultiply(Matrix other) throws DimensionMismatchException {
 		if (this.getDimensions()[1] != other.getDimensions()[0]) {
