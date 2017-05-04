@@ -125,7 +125,7 @@ public class NeuralNet {
 			X = X.addBias();
 			Z = this.getWeights(i).matrixMultiply(X);
 			
-			Z = Z.sigmoidElementwise();
+			Z = Z.elementwiseSigmoid();
 			activations.add(X);
 		}
 		return activations;
@@ -156,7 +156,7 @@ public class NeuralNet {
 			Matrix ThetaNoBias = new Matrix(noBias);
 			//Calculate delta
 			deltas.set(layer, deltas.get(layer + 1).transpose().matrixMultiply(ThetaNoBias));
-			deltas.set(layer, deltas.get(layer).transpose().elementwiseOperation(Z.sigmoidDerivativeElementwise(), (a, b) -> a*b));
+			deltas.set(layer, deltas.get(layer).transpose().elementwiseOperation(Z.elementwiseSigmoidDerivative(), (a, b) -> a*b));
 		}
 		//Set up Deltas
 		ArrayList<Matrix> Deltas = new ArrayList<Matrix>();
