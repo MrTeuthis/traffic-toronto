@@ -48,6 +48,12 @@ public class Matrix {
 		return this.matrix[row][col];
 	}
 	
+	public void fill(double value) {
+		for (int i=0; i<this.matrix.length; i++) {
+			Arrays.fill(this.matrix[i], value);
+		}
+	}
+	
 	/**
 	 * Gets the underlying array of the matrix. 
 	 * @return the underlying array of the matrix
@@ -71,9 +77,9 @@ public class Matrix {
 	/**
 	 * Return a new matrix, the product of this and other. In other words, 
 	 * (this)(other), which is different from (other)(this). 
-	 * @param other another matrix that has the same height and width as the transpose
-	 * 		of this matrix
+	 * @param other another matrix whose height is the same as this matrix's width
 	 * @return the matrix product, which is a new matrix
+	 * @throws DimensionMismatchException thrown when the matrices have incompatible dimensions
 	 */
 	public Matrix matrixMultiply(Matrix other) throws DimensionMismatchException {
 		if (this.getDimensions()[1] != other.getDimensions()[0]) {
@@ -237,6 +243,17 @@ public class Matrix {
 		catch (DimensionMismatchException e) {
 			return new Matrix(newMatrix);
 		}
+	}
+	
+	public Matrix addBias() {
+		double[][] newMatrix = new double[this.matrix.length][this.matrix[0].length + 1];
+		for (int row=0; row<newMatrix.length; row++) {
+			newMatrix[row][0] = 1;
+			for (int col=1; col<newMatrix[0].length; col++) {
+				newMatrix[row][col] = this.matrix[row][col-1];
+			}
+		}
+		return new Matrix(newMatrix);
 	}
 	
 	@Override
