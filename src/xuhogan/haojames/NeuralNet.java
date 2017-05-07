@@ -140,7 +140,7 @@ public class NeuralNet {
 			deltas.add(null);
 		}
 		//Calculate delta for last layer
-		deltas.set(activations.size() - 1, Y.elementwiseSubtract(activations.get(activations.size() - 1)));
+		deltas.set(activations.size() - 1, activations.get(activations.size() - 1)).elementwiseSubtract(Y);
 		//Iterate backwards to calculate other deltas
 		for (int layer=activations.size()-2; layer >= 1; layer--) {
 			//Calculate z
@@ -156,8 +156,9 @@ public class NeuralNet {
 			Matrix ThetaNoBias = new Matrix(noBias);
 			//Calculate delta
 			deltas.set(layer, deltas.get(layer + 1).transpose().matrixMultiply(ThetaNoBias));
-			deltas.set(layer, deltas.get(layer).transpose().elementwiseOperation(Z.elementwiseSigmoidDerivative(), (a, b) -> a*b));
+			deltas.set(layer, deltas.get(layer).transpose().elementwiseOperation(Z.elementwiseSigmoidDerivative(), (a, b) -> a*b)); 
 		}
+		
 		//Set up Deltas
 		ArrayList<Matrix> Deltas = new ArrayList<Matrix>();
 		for (int layer=0; layer<this.weights.size(); layer++) {
@@ -171,8 +172,12 @@ public class NeuralNet {
 			System.out.println(layer);
 		}
 		//Calcuate partial derivatives of Thetas
-		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>();
-		
+		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
+		for (int layer=0; layer<activations.size() - 1; layer++) {
+			ThetaGrads.set(layer, Deltas.get(layer).elementwiseScalarMultiply(1 / X.getDimensions()[0]));
+		}
+		//shouldn't the function return ThetaGrads?
+//		return ThetaGrads;
 	}
 	
 	/**
