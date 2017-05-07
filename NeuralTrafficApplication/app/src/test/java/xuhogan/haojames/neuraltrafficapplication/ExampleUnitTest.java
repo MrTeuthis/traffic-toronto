@@ -1,4 +1,4 @@
-package haojames.xuhogan.neuraltrafficapplication;
+package xuhogan.haojames.neuraltrafficapplication;
 
 import org.junit.Test;
 

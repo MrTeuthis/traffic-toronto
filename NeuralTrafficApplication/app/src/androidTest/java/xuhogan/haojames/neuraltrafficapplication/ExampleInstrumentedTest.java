@@ -1,4 +1,4 @@
-package haojames.xuhogan.neuraltrafficapplication;
+package xuhogan.haojames.neuraltrafficapplication;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("haojames.xuhogan.neuraltrafficapplication", appContext.getPackageName());
+        assertEquals("haojames.haojames.haojames.haohames.neuraltrafficapplication", appContext.getPackageName());
     }
 }

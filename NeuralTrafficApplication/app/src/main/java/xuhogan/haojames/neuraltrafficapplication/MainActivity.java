@@ -1,4 +1,4 @@
-package haojames.xuhogan.neuraltrafficapplication;
+package xuhogan.haojames.neuraltrafficapplication;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
