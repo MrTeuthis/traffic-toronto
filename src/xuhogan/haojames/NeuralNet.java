@@ -176,8 +176,7 @@ public class NeuralNet {
 		for (int layer=0; layer<activations.size() - 1; layer++) {
 			ThetaGrads.set(layer, Deltas.get(layer).elementwiseScalarMultiply(1 / X.getDimensions()[0]));
 		}
-		//shouldn't the function return ThetaGrads?
-//		return ThetaGrads;
+		// TODO: make sure this actually works, and then change the nnet
 	}
 	
 	/**
