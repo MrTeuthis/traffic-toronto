@@ -256,6 +256,67 @@ public class Matrix {
 		return new Matrix(newMatrix);
 	}
 	
+	/**
+	 * Finds the sum of all of the numbers in the matrix.
+	 * @return the sum of all of the numbers in the matrix
+	 */
+	public double sum() {
+		double ret = 0.0; 
+		for (double row[] : matrix) {
+			for (double val : row) {
+				ret += val;
+			}
+		}
+		return ret; 
+	}
+	
+	/**
+	 * Returns a new matrix, which is this[startRows:endRows, startCols:endCols].
+	 * The rows and columns designated by endRows and endCols are not included in the return value.
+	 * @param startRows the first row
+	 * @param endRows the end row, which supports Python-style negatives
+	 * @param startCols the first column
+	 * @param endCols the last column, which supports Python-style negatives
+	 * @return the slice
+	 */
+	public Matrix slice(int startRows, int endRows, int startCols, int endCols) {
+		// exception checking
+		boolean erred = false;
+		StringBuilder msg = new StringBuilder("");
+		if (endRows < startCols) {
+			msg.append("endRows > startRows");
+			erred = true;
+		}
+		if (endCols < startCols) {
+			if (erred) {
+				msg.append(" and ");
+			}
+			msg.append("endCols < startCols");
+			erred = true;
+		}
+		if (erred) {
+			msg.append(", which is not allowed");
+			throw new IndexOutOfBoundsException(msg.toString());
+		}
+		
+		// prepare python-style negatives
+		if (endRows < 0) {
+			endRows += matrix.length;
+		}
+		if (endCols < 0) {
+			endRows += matrix[0].length;
+		}
+		
+		// the actual function body
+		double[][] ret = new double[endRows - startRows][endCols - startCols];
+		for (int r = startRows; r < endRows; r++) {
+			for (int c = startCols; c < endCols; c++) {
+				ret[r - startRows][c - startCols] = matrix[r][c];
+			}
+		}
+		return new Matrix(ret);
+	}
+	
 	@Override
 	public String toString() {
 		String display = this.getDimensions()[0] + "x" + this.getDimensions()[1] + " matrix:\n";
