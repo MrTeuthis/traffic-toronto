@@ -1,6 +1,6 @@
 package xuhogan.haojames;
 
-import xuhogan.haojames.Vector.Orientation;
+//import xuhogan.haojames.Vector.Orientation;
 
 public class Driver {
 
@@ -13,5 +13,6 @@ public class Driver {
 		Matrix y = new Matrix(outputs);
 		//System.out.println(nn.feedForward(x));
 		nn.backpropagate(x, y);
+		//nn.feedForwardActivations(x);
 	}
 }

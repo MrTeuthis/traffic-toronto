@@ -96,12 +96,7 @@ public class Matrix {
 				}
 			}
 		}
-		try {
-			return new Vector(product);
-		}
-		catch (DimensionMismatchException e) {
-			return product;
-		}
+		return product;
 	}
 	
 	/**
@@ -161,12 +156,7 @@ public class Matrix {
 				newMatrix[currentCol][currentRow] = matrix[currentRow][currentCol];
 			}
 		}
-		try {
-			return new Vector(newMatrix);
-		}
-		catch (DimensionMismatchException e) {
-			return new Matrix(newMatrix);
-		}
+		return new Matrix(newMatrix);
 	}
 	
 	/**
@@ -183,12 +173,7 @@ public class Matrix {
 				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol], other);
 			}
 		}
-		try {
-			return new Vector(newMatrix);
-		}
-		catch (DimensionMismatchException e) {
-			return new Matrix(newMatrix);
-		}
+		return new Matrix(newMatrix);
 	}
 	
 	/**
@@ -216,12 +201,7 @@ public class Matrix {
 						);
 			}
 		}
-		try {
-			return new Vector(newMatrix);
-		}
-		catch (DimensionMismatchException e) {
-			return new Matrix(newMatrix);
-		}
+		return new Matrix(newMatrix);
 	}
 	
 	/**
@@ -237,22 +217,59 @@ public class Matrix {
 				newMatrix[currentRow][currentCol] = operation.applyAsDouble(matrix[currentRow][currentCol]);
 			}
 		}
-		try {
-			return new Vector(newMatrix);
-		}
-		catch (DimensionMismatchException e) {
-			return new Matrix(newMatrix);
-		}
+		return new Matrix(newMatrix);
+
 	}
 	
-	public Matrix addBias() {
-		double[][] newMatrix = new double[this.matrix.length][this.matrix[0].length + 1];
-		for (int row=0; row<newMatrix.length; row++) {
-			newMatrix[row][0] = 1;
-			for (int col=1; col<newMatrix[0].length; col++) {
-				newMatrix[row][col] = this.matrix[row][col-1];
+	public Matrix addBias(Direction dir) {
+		double[][] newMatrix; 
+		if (dir == Direction.LEFT || dir == Direction.RIGHT) {
+			newMatrix = new double[this.matrix.length][this.matrix[0].length + 1];
+			if (dir == Direction.LEFT) {
+				//Add bias to left
+				for (int row=0; row<newMatrix.length; row++) {
+					newMatrix[row][0] = 1;
+					for (int col=1; col<newMatrix[0].length; col++) {
+						newMatrix[row][col] = this.matrix[row][col-1];
+					}
+				}
+			}
+			else {
+				//Add bias to right
+				for (int row=0; row<newMatrix.length; row++) {
+					newMatrix[row][newMatrix[0].length-1] = 1;
+					for (int col=0; col<newMatrix[0].length-1; col++) {
+						newMatrix[row][col] = this.matrix[row][col];
+					}
+				}
 			}
 		}
+		else {
+			newMatrix = new double[this.matrix.length + 1][this.matrix[0].length];
+			if (dir == Direction.UP) {
+				//Add bias to top
+				for (int c = 0; c < newMatrix[0].length; c++) {
+					newMatrix[0][c] = 1.0;
+				}
+				for (int row=1; row<newMatrix.length; row++) {
+					for (int col=0; col<newMatrix[0].length; col++) {
+						newMatrix[row][col] = this.matrix[row-1][col];
+					}
+				}
+			}
+			else { 
+				//Add bias to bottom
+				for (int row=0; row<newMatrix.length-1; row++) {
+					for (int col=0; col<newMatrix[0].length; col++) {
+						newMatrix[row][col] = this.matrix[row][col];
+					}
+				}
+				for (int c = 0; c < newMatrix[0].length; c++) {
+					newMatrix[0][newMatrix.length-1] = 1.0;
+				}
+			}
+		}
+		
 		return new Matrix(newMatrix);
 	}
 	
@@ -317,6 +334,10 @@ public class Matrix {
 		return new Matrix(ret);
 	}
 	
+	public String dimToStr() {
+		return getDimensions()[0] + "," + getDimensions()[1];
+	}
+	
 	@Override
 	public String toString() {
 		String display = this.getDimensions()[0] + "x" + this.getDimensions()[1] + " matrix:\n";
@@ -327,6 +348,22 @@ public class Matrix {
 		    display += "\n";
 		}
 		return display;
+	}
+	
+	public double[] getOneDimensionalArray() throws DimensionMismatchException {
+		if (matrix.length == 1) {
+			return matrix[0];
+		}
+		else if (matrix[0].length == 1) {
+			double[] ret = new double[matrix.length];
+			for (int i = 0; i < ret.length; i++) {
+				ret[i] = matrix[0][i];
+			}
+			return ret;
+		}
+		else {
+			throw new DimensionMismatchException("Cannot convert non-vector to one-dimensional array");
+		}
 	}
 	
 	@Override

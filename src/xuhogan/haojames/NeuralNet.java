@@ -97,15 +97,15 @@ public class NeuralNet {
 	 * @return a vertical vector, containing the results
 	 * @throws DimensionMismatchException thrown when the input array is not the right size
 	 */
-	public Vector feedForward(Vector x) throws DimensionMismatchException {
-		if (x.getOrientation() == Vector.Orientation.HORIZONTAL) {
+	public Matrix feedForward(Matrix x) throws DimensionMismatchException {
+		if (x.getDimensions()[1] > 1) {
 			throw new DimensionMismatchException("Input vector must be vertical");
 		}
-		Vector z = new Vector();
+		Matrix z = new Matrix();
 		for (int i=0; i<this.layers.length-1; i++) {
-			x = x.addBias();
-			z = (Vector) this.getWeights(i).matrixMultiply(x);
-			x = (Vector) z.elementwiseSigmoid();
+			x = x.addBias(Direction.UP);
+			z = this.getWeights(i).matrixMultiply(x);
+			x = z.elementwiseSigmoid();
 		}
 		return x;
 	}
@@ -122,11 +122,21 @@ public class NeuralNet {
 		Matrix Z = new Matrix();
 		activations.add(X);
 		for (int i=0; i<this.layers.length-1; i++) {
-			X = X.addBias();
-			Z = this.getWeights(i).matrixMultiply(X);
+			X = X.addBias(Direction.LEFT); 
+			System.out.println("in:" + X.dimToStr());
+			System.out.println("weight: " + this.getWeights(i).dimToStr());
 			
+			Z = X.matrixMultiply(this.getWeights(i).transpose());
+			
+			System.out.println("activ: " + Z.dimToStr());
 			Z = Z.elementwiseSigmoid();
-			activations.add(X);
+			activations.add(Z);
+			if (i == 0) {
+				X = Z;
+			}
+			else {
+				X = Z;
+			}
 		}
 		return activations;
 	}	
@@ -144,7 +154,7 @@ public class NeuralNet {
 		//Iterate backwards to calculate other deltas
 		for (int layer=activations.size()-2; layer >= 1; layer--) {
 			//Calculate z
-			Matrix Z = this.weights.get(layer-1).matrixMultiply(activations.get(layer-1).addBias());
+			Matrix Z = this.weights.get(layer-1).matrixMultiply(activations.get(layer-1).addBias(Direction.LEFT));
 			//Calculate ThetaNoBias
 			Matrix Theta = this.weights.get(layer);
 			double[][] noBias = new double[Theta.getDimensions()[0]][Theta.getDimensions()[1]-1];
@@ -214,7 +224,7 @@ public class NeuralNet {
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
 	 * when the answer vector is not the right size 
 	 */
-	public double cost(Vector outputs, Vector expectedOutputs) throws DimensionMismatchException {
+	public double cost(Matrix outputs, Matrix expectedOutputs) throws DimensionMismatchException {
 		return cost(outputs.getOneDimensionalArray(), expectedOutputs.getOneDimensionalArray());
 	}
 }
