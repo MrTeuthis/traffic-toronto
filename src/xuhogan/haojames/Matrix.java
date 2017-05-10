@@ -99,6 +99,24 @@ public class Matrix {
 		return product;
 	}
 	
+	public Matrix unsafeMultiply(Matrix other) throws DimensionMismatchException {
+		try {
+			return matrixMultiply(other);
+		} catch (DimensionMismatchException e) {
+			try {
+				return matrixMultiply(other.transpose());
+			}
+			catch (DimensionMismatchException f) {
+				try {
+					return transpose().matrixMultiply(other);
+				}
+				catch (DimensionMismatchException g) {
+					return transpose().matrixMultiply(other.transpose());
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Return a new matrix, the product of this matrix and the scalar num. 
 	 * @param scalar a scalar
