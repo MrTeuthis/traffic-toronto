@@ -123,12 +123,12 @@ public class NeuralNet {
 		activations.add(X);
 		for (int i=0; i<this.layers.length-1; i++) {
 			X = X.addBias(Direction.LEFT); 
-			System.out.println("in:" + X.dimToStr());
-			System.out.println("weight: " + this.getWeights(i).dimToStr());
+//			System.out.println("in:" + X.dimToStr());
+//			System.out.println("weight: " + this.getWeights(i).dimToStr());
 			
 			Z = X.matrixMultiply(this.getWeights(i).transpose());
 			
-			System.out.println("activ: " + Z.dimToStr());
+//			System.out.println("activ: " + Z.dimToStr());
 			Z = Z.elementwiseSigmoid();
 			activations.add(Z);
 			if (i == 0) {
@@ -178,9 +178,9 @@ public class NeuralNet {
 		for (int layer=0; layer<activations.size() - 1; layer++) {
 			Deltas.set(layer, deltas.get(layer + 1).matrixMultiply(activations.get(layer)));
 		}
-		for (Matrix layer: Deltas) {
-			System.out.println(layer);
-		}
+//		for (Matrix layer: Deltas) {
+//			System.out.println(layer);
+//		}
 		//Calcuate partial derivatives of Thetas
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
 		for (int layer=0; layer<activations.size() - 1; layer++) {
