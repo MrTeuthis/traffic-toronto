@@ -131,12 +131,7 @@ public class NeuralNet {
 //			System.out.println("activ: " + Z.dimToStr());
 			Z = Z.elementwiseSigmoid();
 			activations.add(Z);
-			if (i == 0) {
-				X = Z;
-			}
-			else {
-				X = Z;
-			}
+			X = Z;
 		}
 		return activations;
 	}	
