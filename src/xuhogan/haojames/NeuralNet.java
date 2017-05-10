@@ -133,7 +133,7 @@ public class NeuralNet {
 		return activations;
 	}	
 
-	public void backpropagate(Matrix X, Matrix Y) throws DimensionMismatchException{
+	public void backpropagate(Matrix X, Matrix Y, double lambda) throws DimensionMismatchException{
 		//Feedforward
 		ArrayList<Matrix> activations = this.feedForwardActivations(X);
 		//Set up deltas
@@ -173,7 +173,13 @@ public class NeuralNet {
 		//Calcuate partial derivatives of Thetas
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
 		for (int layer=0; layer<activations.size() - 1; layer++) {
-			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]));
+			Matrix regularisationFactor = weights.get(layer).elementwiseScalarMultiply(1.0/X.getDimensions()[0] * lambda); 
+			//leftmost column does not get regularisation factor
+			for (int r = 0; r < regularisationFactor.getDimensions()[0]; r++) {
+				regularisationFactor.setValue(r, 0, 0);
+			}
+			
+			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]).elementwiseAdd(regularisationFactor));
 		}
 		// TODO: make sure this actually works, and then change the nnet
 		System.out.println("Activations: " + activations);

@@ -12,7 +12,7 @@ public class Driver {
 		Matrix x = new Matrix(inputs);
 		Matrix y = new Matrix(outputs);
 		//System.out.println(nn.feedForward(x));
-		nn.backpropagate(x, y);
+		nn.backpropagate(x, y, 0.01);
 		//nn.feedForwardActivations(x);
 	}
 }
