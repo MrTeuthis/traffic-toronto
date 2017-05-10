@@ -111,9 +111,9 @@ public class NeuralNet {
 	}
 	
 	/**
-	 * Feeds inputs into the neural net and returns activations 
-	 * TODO this javadoc. idk what's happening here tbh
-	 * @param x a vertical vector of inputs
+	 * Feeds inputs into the neural net and returns the activations
+	 * of each layer. 
+	 * @param X a matrix representing multiple vertical vectors of inputs
 	 * @return the activations
 	 * @throws DimensionMismatchException thrown when the input vector is not the right size
 	 */
