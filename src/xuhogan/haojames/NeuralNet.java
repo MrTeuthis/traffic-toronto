@@ -168,7 +168,7 @@ public class NeuralNet {
 		}
 		//Calculate Deltas
 		for (int layer=0; layer<activations.size() - 1; layer++) {
-			Deltas.set(layer, deltas.get(layer + 1).matrixMultiply(activations.get(layer)));
+			Deltas.set(layer, deltas.get(layer + 1).matrixMultiply(activations.get(layer).addBias(Direction.LEFT)));
 		}
 		//Calcuate partial derivatives of Thetas
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
