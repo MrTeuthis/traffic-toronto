@@ -173,7 +173,7 @@ public class NeuralNet {
 		//Calcuate partial derivatives of Thetas
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
 		for (int layer=0; layer<activations.size() - 1; layer++) {
-			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1 / X.getDimensions()[0]));
+			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]));
 		}
 		// TODO: make sure this actually works, and then change the nnet
 		System.out.println("Activations: " + activations);
