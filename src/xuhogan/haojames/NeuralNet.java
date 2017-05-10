@@ -193,27 +193,45 @@ public class NeuralNet {
 	 * Returns the result of the cost function J(theta). 
 	 * @param inputs an array of inputs
 	 * @param expectedOutputs the expected answer
+	 * @param lambda the regularisation parameter
 	 * @return the cost
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
 	 * when the answer vector is not the right size 
 	 */
-	public double cost(double[] outputs, double[] expectedOutputs) throws DimensionMismatchException {
+	public double cost(double[] outputs, double[] expectedOutputs, double lambda) throws DimensionMismatchException {
 		if (expectedOutputs.length != layers[layers.length - 1]) {
 			throw new DimensionMismatchException(
 					"Expected vector of length " + Integer.toString(layers[layers.length - 1]) + " but got " + Integer.toString(expectedOutputs.length)
 					);
 		}
 		
-		double ret = 0.0;
-		
+		//mean squared error
+		double err = 0.0;
 		for (int i = 0; i < expectedOutputs.length; i++) {
 			double tmp = (expectedOutputs[i] - outputs[i]);
-			ret += tmp * tmp;
+			err += tmp * tmp;
+		}
+		err *= (1/outputs.length);
+		
+		//regularisation 
+		double regularisation = 0.0;
+		for (Matrix theta : weights) {
+			regularisation += theta.elementwiseOperation((q) -> (q*q)).sum();
 		}
 		
-		// TODO: regularise, etc. 
-		
-		return Math.sqrt(ret); 
+		return err + regularisation; 
+	}
+	
+	/**
+	 * Returns the result of the cost function J(theta) with lambda = 0.01. 
+	 * @param inputs an array of inputs
+	 * @param expectedOutputs the expected answer
+	 * @return the cost
+	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
+	 * when the answer vector is not the right size 
+	 */
+	public double cost(double[] outputs, double[] expectedOutputs) throws DimensionMismatchException {
+		return cost(outputs, expectedOutputs, 0.01);
 	}
 	
 	/**
