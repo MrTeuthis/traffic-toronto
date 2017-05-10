@@ -318,7 +318,7 @@ public class Matrix {
 		// exception checking
 		boolean erred = false;
 		StringBuilder msg = new StringBuilder("");
-		if (endRows < startCols) {
+		if (endRows < startRows) {
 			msg.append("endRows > startRows");
 			erred = true;
 		}
@@ -350,6 +350,17 @@ public class Matrix {
 			}
 		}
 		return new Matrix(ret);
+	}
+	
+	/**
+	 * Returns a new matrix, which is this[startRows:end, startCols:end]. 
+	 * In other words, it returns the bottom right corner of the matrix. 
+	 * @param startRows the first row
+	 * @param startCols the first column
+	 * @return
+	 */
+	public Matrix slice(int startRows, int startCols) {
+		return slice(startRows, matrix.length, startCols, matrix[0].length);
 	}
 	
 	public String dimToStr() {

@@ -1,6 +1,7 @@
 package xuhogan.haojames;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class NeuralNet {
@@ -132,7 +133,17 @@ public class NeuralNet {
 		}
 		return activations;
 	}	
-
+	
+	/**
+	 * Does the backpropagate process once on the neural net. 
+	 * Specifically, it runs a feedforward to find the activations, 
+	 * and backpropagates to find the error on each node. Finally, it corrects those 
+	 * errors in each node using gradient descent. 
+	 * @param X
+	 * @param Y
+	 * @param lambda
+	 * @throws DimensionMismatchException
+	 */
 	public void backpropagate(Matrix X, Matrix Y, double lambda) throws DimensionMismatchException{
 		//Feedforward
 		ArrayList<Matrix> activations = this.feedForwardActivations(X);
@@ -182,17 +193,27 @@ public class NeuralNet {
 			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]).elementwiseAdd(regularisationFactor));
 		}
 		// TODO: make sure this actually works, and then change the nnet
-		System.out.println("Activations: " + activations);
-		System.out.println("deltas: " + deltas);
-		System.out.println("Deltas: " + Deltas);
-		System.out.println("ThetaGrads: " + ThetaGrads);
-		System.out.println("Weights: " + weights);
-
+//		System.out.println("Activations: " + activations);
+//		System.out.println("deltas: " + deltas);
+//		System.out.println("Deltas: " + Deltas);
+//		System.out.println("ThetaGrads: " + ThetaGrads);
+//		System.out.println("Weights: " + weights);
+		
+		Matrix out = activations.get(activations.size()-1);
+		for (int i = 0; i < Y.getDimensions()[0]; i++) {
+			System.out.println("Cost of test " + i + ": " + cost(out.slice(i, i+1, 0, out.getDimensions()[1]), Y.slice(i, i+1, 0, Y.getDimensions()[1]), lambda));
+		}
+		System.out.println();
+		
+		//Grand finale: update the weights
+		for (int layer = 0; layer < weights.size(); layer++) {
+			weights.set(layer, weights.get(layer).elementwiseSubtract(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
+		}
 	}
 	
 	/**
 	 * Returns the result of the cost function J(theta). 
-	 * @param inputs an array of inputs
+	 * @param outputs the answer given by the neural net
 	 * @param expectedOutputs the expected answer
 	 * @param lambda the regularisation parameter
 	 * @return the cost
@@ -225,7 +246,7 @@ public class NeuralNet {
 	
 	/**
 	 * Returns the result of the cost function J(theta) with lambda = 0.01. 
-	 * @param inputs an array of inputs
+	 * @param outputs the answer given by the neural net
 	 * @param expectedOutputs the expected answer
 	 * @return the cost
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
@@ -237,7 +258,7 @@ public class NeuralNet {
 	
 	/**
 	 * Returns the result of the cost function J(theta). 
-	 * @param inputs an array of inputs
+	 * @param outputs the answer given by the neural net
 	 * @param expectedOutputs the expected answer
 	 * @return the cost
 	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
@@ -245,5 +266,18 @@ public class NeuralNet {
 	 */
 	public double cost(Matrix outputs, Matrix expectedOutputs) throws DimensionMismatchException {
 		return cost(outputs.getOneDimensionalArray(), expectedOutputs.getOneDimensionalArray());
+	}
+	
+	/**
+	 * Returns the result of the cost function J(theta). 
+	 * @param outputs the answer given by the neural net
+	 * @param expectedOutputs the expected answer
+	 * @param lambda the regularisation parameter
+	 * @return the cost
+	 * @throws DimensionMismatchException thrown when the input array is not the right size, or 
+	 * when the answer vector is not the right size 
+	 */
+	public double cost(Matrix outputs, Matrix expectedOutputs, double lambda) throws DimensionMismatchException {
+		return cost(outputs.getOneDimensionalArray(), expectedOutputs.getOneDimensionalArray(), lambda);
 	}
 }
