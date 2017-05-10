@@ -206,7 +206,7 @@ public class NeuralNet {
 			double tmp = (expectedOutputs[i] - outputs[i]);
 			err += tmp * tmp;
 		}
-		err *= (1/outputs.length);
+		err *= (1.0/outputs.length);
 		
 		//regularisation 
 		double regularisation = 0.0;
