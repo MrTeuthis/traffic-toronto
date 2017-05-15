@@ -86,7 +86,7 @@ public class TestCases {
 		assert arg.elementwiseOperation(duo).equals(result);
 	}
 	
-	public static void main() throws Throwable {
+	public static void main(String[] args) throws Throwable {
 		testMatrix();
 	}
 }
