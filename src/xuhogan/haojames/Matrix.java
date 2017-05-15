@@ -344,8 +344,8 @@ public class Matrix {
 		
 		// the actual function body
 		double[][] ret = new double[endRows - startRows][endCols - startCols];
-		for (int r = startRows; r < endRows; r++) {
-			for (int c = startCols; c < endCols; c++) {
+		for (int r = startRows; r < endRows - startRows; r++) {
+			for (int c = startCols; c < endCols - startCols; c++) {
 				ret[r - startRows][c - startCols] = matrix[r][c];
 			}
 		}

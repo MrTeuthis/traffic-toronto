@@ -1,8 +1,8 @@
 package xuhogan.haojames;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
+import java.util.Stack;
 
 public class NeuralNet {
 	private int[] layers;
@@ -139,12 +139,13 @@ public class NeuralNet {
 	 * Specifically, it runs a feedforward to find the activations, 
 	 * and backpropagates to find the error on each node. Finally, it corrects those 
 	 * errors in each node using gradient descent. 
-	 * @param X
-	 * @param Y
-	 * @param lambda
-	 * @throws DimensionMismatchException
+	 * @param X the inputs
+	 * @param Y the expected outputs
+	 * @param lambda the regularisation factor
+	 * @return the costs of each of the test cases
+	 * @throws DimensionMismatchException thrown when the sizes are not correct
 	 */
-	public void backpropagate(Matrix X, Matrix Y, double lambda) throws DimensionMismatchException{
+	public double[] backpropagate(Matrix X, Matrix Y, double lambda) throws DimensionMismatchException{
 		//Feedforward
 		ArrayList<Matrix> activations = this.feedForwardActivations(X);
 		//Set up deltas
@@ -180,6 +181,7 @@ public class NeuralNet {
 		//Calculate Deltas
 		for (int layer=0; layer<activations.size() - 1; layer++) {
 			Deltas.set(layer, deltas.get(layer + 1).matrixMultiply(activations.get(layer).addBias(Direction.LEFT)));
+			
 		}
 		//Calcuate partial derivatives of Thetas
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
@@ -192,23 +194,31 @@ public class NeuralNet {
 			
 			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]).elementwiseAdd(regularisationFactor));
 		}
-		// TODO: make sure this actually works, and then change the nnet
-//		System.out.println("Activations: " + activations);
-//		System.out.println("deltas: " + deltas);
-//		System.out.println("Deltas: " + Deltas);
-//		System.out.println("ThetaGrads: " + ThetaGrads);
-//		System.out.println("Weights: " + weights);
-		
-		Matrix out = activations.get(activations.size()-1);
-		for (int i = 0; i < Y.getDimensions()[0]; i++) {
-			System.out.println("Cost of test " + i + ": " + cost(out.slice(i, i+1, 0, out.getDimensions()[1]), Y.slice(i, i+1, 0, Y.getDimensions()[1]), lambda));
-		}
-		System.out.println();
 		
 		//Grand finale: update the weights
 		for (int layer = 0; layer < weights.size(); layer++) {
-			weights.set(layer, weights.get(layer).elementwiseSubtract(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
+			weights.set(layer, weights.get(layer).elementwiseAdd(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
 		}
+		
+		if (Driver.iter % 1000 == 0) {
+			StringBuilder sb = new StringBuilder("");
+			
+			sb.append("activations: ");
+			sb.append(activations.get(activations.size()-1));
+			
+			sb.append("\nthetas: ");
+			for (Matrix weight : weights) {
+				sb.append(weight.toString());
+			}
+			sb.append("\nDeltas: ");
+			for (Matrix Delta : Deltas) {
+				sb.append(Delta.toString());
+			}
+			
+			System.out.println(sb.toString());
+		}
+		
+		return costMulti(activations.get(activations.size()-1), Y, lambda); 
 	}
 	
 	/**
@@ -279,5 +289,42 @@ public class NeuralNet {
 	 */
 	public double cost(Matrix outputs, Matrix expectedOutputs, double lambda) throws DimensionMismatchException {
 		return cost(outputs.getOneDimensionalArray(), expectedOutputs.getOneDimensionalArray(), lambda);
+	}
+	
+	/**
+	 * Returns the results of the cost function J(theta), for multiple examples. 
+	 * @param outputs the answers given by the neural net
+	 * @param expectedOutputs the expected answers 
+	 * @param lambda the regularisation factor
+	 * @return the costs
+	 * @throws DimensionMismatchException thrown when the inputs are not the same sizes
+	 */
+	public double[] costMulti(Matrix outputs, Matrix expectedOutputs, double lambda) throws DimensionMismatchException {
+		if (outputs.getDimensions()[1] != expectedOutputs.getDimensions()[1] 
+				|| outputs.getDimensions()[0] != expectedOutputs.getDimensions()[0] ) {
+			String message = "Matrix dimensions are different: ";
+			message += outputs.getDimensions()[0] + "x" + outputs.getDimensions()[1];
+			message += " and " + expectedOutputs.getDimensions()[0] + "x" + expectedOutputs.getDimensions()[1];
+			throw new DimensionMismatchException(message);		
+		}
+		double[] ret = new double[outputs.getDimensions()[1]];
+		
+		for (int i = 0; i < outputs.getDimensions()[1]; i++) {
+			ret[i] = cost(outputs.slice(i, i+1, 0, outputs.getDimensions()[1]), expectedOutputs.slice(i, i+1, 0, expectedOutputs.getDimensions()[1]), lambda);
+		}
+		return ret; 
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("");
+		for (Matrix weight : weights) {
+			sb.append(weight.toString());
+		}
+		sb.append('\n');
+		for (Matrix weight : weights) {
+			sb.append(weight.toString());
+		}
+		return sb.toString();
 	}
 }
