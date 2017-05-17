@@ -30,7 +30,7 @@ public class NeuralNet {
 	 */
 	public NeuralNet(ArrayList<Matrix> weights) {
 		this.weights = weights;
-		int[] layers = new int[weights.size() + 1];
+		this.layers = new int[weights.size() + 1];
 		layers[1] = weights.get(0).getDimensions()[1] - 1;
 		for (int i=0; i<layers.length-1; i++) {
 			layers[i] = weights.get(i).getDimensions()[0];
