@@ -89,7 +89,7 @@ public class NeuralNet {
 	 * @throws IllegalArgumentException thrown when s is not in the range [-1..1]
 	 */
 	public static double antiSigmoid(double s) {
-		if (-1 < s || s < 1) {
+		if (-1 > s || s > 1) {
 			throw new IllegalArgumentException("s not between -1 and 1");
 		}
 		if (s == -1 || s == 1) {
@@ -202,12 +202,11 @@ public class NeuralNet {
 		//Calcuate partial derivatives of Thetas
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
 		for (int layer=0; layer<activations.size() - 1; layer++) {
-			Matrix regularisationFactor = weights.get(layer).elementwiseScalarMultiply(1.0/X.getDimensions()[0] * lambda); 
+			Matrix regularisationFactor = weights.get(layer).elementwiseScalarMultiply(lambda); 
 			//leftmost column does not get regularisation factor
 			for (int r = 0; r < regularisationFactor.getDimensions()[0]; r++) {
 				regularisationFactor.setValue(r, 0, 0);
 			}
-			
 			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]).elementwiseAdd(regularisationFactor));
 		}
 		
@@ -224,6 +223,9 @@ public class NeuralNet {
 			
 			sb.append("\nDeltas: ");
 			sb.append(Deltas.toString());
+			
+			sb.append("\nThetaaGrads: ");
+			sb.append(ThetaGrads.toString());
 
 			sb.append("\nactivations: ");
 			sb.append(activations.toString());
@@ -234,6 +236,7 @@ public class NeuralNet {
 			System.out.println(sb.toString());
 			
 			System.out.println(costMulti(activations.get(activations.size()-1), Y, lambda)[0]);
+			System.out.println();
 		}
 		
 		return costMulti(activations.get(activations.size()-1), Y, lambda); 

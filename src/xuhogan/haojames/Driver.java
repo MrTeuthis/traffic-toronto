@@ -9,21 +9,26 @@ public class Driver {
 	public static long iter = 0;
 	public static double cost = Double.POSITIVE_INFINITY; 
 
-	public static void main(String[] args) throws DimensionMismatchException {
-		int[] layers = {2,5,5,5,4};
+	public static void main(String[] args) throws DimensionMismatchException {		
+		int[] layers = {2,3,3,1};
 		NeuralNet nn = new NeuralNet(layers);
-		double[][] inputs = {{2,3}};
-		double[][] outputs = {{0,0,0,0}};
 		
-		Matrix x = new Matrix(inputs);
-		x = x.elementwiseSigmoid();
-		Matrix y = new Matrix(outputs);
-		y = y.elementwiseSigmoid();
-		//System.out.println(nn.feedForward(x));
-		while (cost > 1.0) {
-			cost = nn.backpropagate(x, y, 0.003)[0];
+		for (iter = 0; iter < 1000000; iter++) {
+			Matrix[] things = makeTestMatrices();
+			nn.backpropagate(things[0], things[1], 0.000003);
 		}
-		System.out.println();
+		
+		ArrayList<Matrix> hypotheticallyPerfectWeights = new ArrayList<Matrix>(1);
+		hypotheticallyPerfectWeights.add(new Matrix(new double[][]{{0.0, 0.75, 0.75}}));
+		NeuralNet nn2 = new NeuralNet(hypotheticallyPerfectWeights);
+		
+		System.out.print(nn.feedForward(
+				new Matrix(new double[][] {{-0.5}, {1.5}}).elementwiseSigmoid()
+				).getValue(0, 0)
+				);
+		
+		System.out.println(" vs " + new Matrix(new double[][]{{-0.75}}).elementwiseSigmoid().getValue(0, 0));
+		return; 
 	}
 
 	public static String printArray(double[] vals) {
@@ -38,27 +43,19 @@ public class Driver {
 		}
 		return ret.toString();
 	}
-
-	/**
-	 * Makes a test case. The input matrix, the first element in the returned array, is a horizontal
-	 * vector of form [x; y] and has already been normalised. The output matrix is a horizontal vector
-	 * of form [x; y; x; y]. 
-	 * @return
-	 */
+	
 	public static Matrix[] makeTestMatrices() {
 		Random rand = new Random();
-		double a = rand.nextDouble(), b = rand.nextDouble(); 
+		double a = rand.nextInt(101) - 50; 
+		double b = rand.nextInt(101) - 50;  
 		Matrix[] ret = new Matrix[2]; 
 		ret[0] = new Matrix(2, 1); 
 		ret[0].setValue(0, 0, a);
 		ret[0].setValue(1, 0, b);
 		ret[0] = ret[0].elementwiseSigmoid().transpose(); //yeah i wrote this wrong the first time
 		
-		ret[1] = new Matrix(4, 1); 
-		ret[1].setValue(0, 0, a);
-		ret[1].setValue(1, 0, b);
-		ret[1].setValue(2, 0, a);
-		ret[1].setValue(3, 0, b);
+		ret[1] = new Matrix(1, 1); 
+		ret[1].setValue(0, 0, a * b); 
 		ret[1] = ret[1].elementwiseSigmoid().transpose();
 		
 		return ret; 
