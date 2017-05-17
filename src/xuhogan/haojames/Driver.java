@@ -7,26 +7,23 @@ import java.io.*;
 public class Driver {
 	
 	public static long iter = 0;
+	public static double cost = Double.POSITIVE_INFINITY; 
 
 	public static void main(String[] args) throws DimensionMismatchException {
 		int[] layers = {2,5,5,5,4};
 		NeuralNet nn = new NeuralNet(layers);
-		double[][] inputs = {{2,3},{7,3},{2,3},{7,3},{2,3},{7,3}};
-		double[][] outputs = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+		double[][] inputs = {{2,3}};
+		double[][] outputs = {{0,0,0,0}};
 		
 		Matrix x = new Matrix(inputs);
 		x = x.elementwiseSigmoid();
 		Matrix y = new Matrix(outputs);
 		y = y.elementwiseSigmoid();
 		//System.out.println(nn.feedForward(x));
-		for (int i = 0; i < 5000; i++) {
-			nn.backpropagate(x, y, 0.05);
+		while (cost > 1.0) {
+			cost = nn.backpropagate(x, y, 0.003)[0];
 		}
-	}
-	
-	private static void nop() {
-		// TODO Auto-generated method stub
-		
+		System.out.println();
 	}
 
 	public static String printArray(double[] vals) {
@@ -65,5 +62,16 @@ public class Driver {
 		ret[1] = ret[1].elementwiseSigmoid().transpose();
 		
 		return ret; 
+	}
+
+	public static boolean containsValue(Matrix mat, double d) {
+		for (double[] row : mat.matrix) {
+			for (double val : row) {
+				if (val == d) {
+					return true;
+				}
+			}
+		}
+		return false; 
 	}
 }

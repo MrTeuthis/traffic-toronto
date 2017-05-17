@@ -197,7 +197,7 @@ public class NeuralNet {
 		
 		//Grand finale: update the weights
 		for (int layer = 0; layer < weights.size(); layer++) {
-			weights.set(layer, weights.get(layer).elementwiseAdd(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
+			weights.set(layer, weights.get(layer).elementwiseSubtract(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
 		}
 		
 		if (Driver.iter % 1000 == 0) {
@@ -208,6 +208,13 @@ public class NeuralNet {
 			
 			sb.append("\nthetas: ");
 			for (Matrix weight : weights) {
+				for (double[] r : weight.matrix) {
+					for (double val : r) {
+						if (val != val) { //if val is nan
+							int useless_val = 0; 
+						}	
+					}
+				}
 				sb.append(weight.toString());
 			}
 			sb.append("\nDeltas: ");
@@ -216,6 +223,8 @@ public class NeuralNet {
 			}
 			
 			System.out.println(sb.toString());
+			
+			System.out.println(costMulti(activations.get(activations.size()-1), Y, lambda)[0]);
 		}
 		
 		return costMulti(activations.get(activations.size()-1), Y, lambda); 
