@@ -83,6 +83,22 @@ public class NeuralNet {
 	}
 	
 	/**
+	 * Returns the number whose sigmoid is the argument. 
+	 * @param s the sigmoid
+	 * @return the number whose sigmoid is the argument
+	 * @throws IllegalArgumentException thrown when s is not in the range [-1..1]
+	 */
+	public static double antiSigmoid(double s) {
+		if (-1 < s || s < 1) {
+			throw new IllegalArgumentException("s not between -1 and 1");
+		}
+		if (s == -1 || s == 1) {
+			return Double.POSITIVE_INFINITY * s;
+		}
+		return Math.log(s/1-s);
+	}
+	
+	/**
 	 * Computes the derivative of the sigmoid function at z, the argument. 
 	 * @param z the argument
 	 * @return the derivative of the sigmoid function at z
