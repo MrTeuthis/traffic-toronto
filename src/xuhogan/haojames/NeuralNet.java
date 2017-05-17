@@ -202,25 +202,18 @@ public class NeuralNet {
 		
 		if (Driver.iter % 1000 == 0) {
 			StringBuilder sb = new StringBuilder("");
+
+			sb.append("deltas: ");
+			sb.append(deltas.toString());
 			
-			sb.append("activations: ");
-			sb.append(activations.get(activations.size()-1));
+			sb.append("\nDeltas: ");
+			sb.append(Deltas.toString());
+
+			sb.append("\nactivations: ");
+			sb.append(activations.toString());
 			
 			sb.append("\nthetas: ");
-			for (Matrix weight : weights) {
-				for (double[] r : weight.matrix) {
-					for (double val : r) {
-						if (val != val) { //if val is nan
-							int useless_val = 0; 
-						}	
-					}
-				}
-				sb.append(weight.toString());
-			}
-			sb.append("\nDeltas: ");
-			for (Matrix Delta : Deltas) {
-				sb.append(Delta.toString());
-			}
+			sb.append(weights.toString());
 			
 			System.out.println(sb.toString());
 			
