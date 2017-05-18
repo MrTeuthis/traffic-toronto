@@ -165,12 +165,40 @@ public class NeuralNet {
 		//Feedforward
 		ArrayList<Matrix> activations = this.feedForwardActivations(X);
 		//Set up deltas
+		ArrayList<Matrix> deltas = calculateSmallDeltas(activations, Y);
+		
+		//Set up Deltas
+		ArrayList<Matrix> Deltas = calculateBigDeltas(activations, deltas);
+		
+		//Calcuate partial derivatives of Thetas
+		ArrayList<Matrix> ThetaGrads = calculateThetaGrads(activations, deltas, Deltas, lambda);
+		
+		//Grand finale: update the weights
+		for (int layer = 0; layer < weights.size(); layer++) {
+			weights.set(layer, weights.get(layer).elementwiseSubtract(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
+		}
+		
+		double[] cost = costMulti(activations.get(activations.size()-1), Y, lambda);
+		if (Driver.iter % 1000 == 0) {
+			printBackpropDebug(deltas, Deltas, ThetaGrads, activations, cost[0]);
+		}
+		
+		return cost; 
+	}
+	
+	/**
+	 * Calculates the deltas for a given activation
+	 * @param activations the activations
+	 * @return the deltas
+	 * @throws DimensionMismatchException thrown when there is a dimension mismatch
+	 */
+	private ArrayList<Matrix> calculateSmallDeltas(ArrayList<Matrix> activations, Matrix hypothesis) throws DimensionMismatchException {
 		ArrayList<Matrix> deltas = new ArrayList<Matrix>();
 		for (int i=0; i<activations.size(); i++) {
 			deltas.add(null);
 		}
 		//Calculate delta for last layer
-		deltas.set(activations.size() - 1, activations.get(activations.size() - 1).elementwiseSubtract(Y).transpose());
+		deltas.set(activations.size() - 1, activations.get(activations.size() - 1).elementwiseSubtract(hypothesis).transpose());
 		//Iterate backwards to calculate other deltas
 		for (int layer=activations.size()-2; layer >= 1; layer--) {
 			//Calculate z
@@ -185,11 +213,19 @@ public class NeuralNet {
 			}
 			Matrix ThetaNoBias = new Matrix(noBias);
 			//Calculate delta
-			deltas.set(layer, deltas.get(layer + 1).transpose().matrixMultiply(ThetaNoBias));
-			deltas.set(layer, deltas.get(layer).transpose().elementwiseOperation(Z.elementwiseSigmoidDerivative(), (a, b) -> a*b)); 
+			deltas.set(layer, deltas.get(layer + 1).transpose().matrixMultiply(ThetaNoBias).transpose().elementwiseOperation(Z.elementwiseSigmoidDerivative(), (a, b) -> a*b)); 
 		}
-		
-		//Set up Deltas
+		return deltas;
+	}
+	
+	/**
+	 * Calculates the big-D Deltas for a given activation and with given small-D deltas
+	 * @param activations the activations
+	 * @param deltas the deltas
+	 * @return the Deltas
+	 * @throws DimensionMismatchException thrown when there is a dimension mismatch
+	 */
+	private ArrayList<Matrix> calculateBigDeltas(ArrayList<Matrix> activations, ArrayList<Matrix> deltas) throws DimensionMismatchException {
 		ArrayList<Matrix> Deltas = new ArrayList<Matrix>();
 		for (int layer=0; layer<this.weights.size(); layer++) {
 			Deltas.add(new Matrix(this.weights.get(layer).getDimensions()[0], this.weights.get(layer).getDimensions()[1]));
@@ -197,9 +233,20 @@ public class NeuralNet {
 		//Calculate Deltas
 		for (int layer=0; layer<activations.size() - 1; layer++) {
 			Deltas.set(layer, deltas.get(layer + 1).matrixMultiply(activations.get(layer).addBias(Direction.LEFT)));
-			
 		}
-		//Calcuate partial derivatives of Thetas
+		return Deltas; 
+	}
+	
+	/**
+	 * Calculates the gradients of the thetas
+	 * @param activations the activations
+	 * @param deltas the deltas
+	 * @param Deltas the Deltas
+	 * @param lambda the lambda
+	 * @return the gradients of the thetas
+	 * @throws DimensionMismatchException thrown when there is a dimension mismatch
+	 */
+	private ArrayList<Matrix> calculateThetaGrads(ArrayList<Matrix> activations, ArrayList<Matrix> deltas, ArrayList<Matrix> Deltas, double lambda) throws DimensionMismatchException {
 		ArrayList<Matrix> ThetaGrads = new ArrayList<Matrix>(layers.length);
 		for (int layer=0; layer<activations.size() - 1; layer++) {
 			Matrix regularisationFactor = weights.get(layer).elementwiseScalarMultiply(lambda); 
@@ -207,39 +254,41 @@ public class NeuralNet {
 			for (int r = 0; r < regularisationFactor.getDimensions()[0]; r++) {
 				regularisationFactor.setValue(r, 0, 0);
 			}
-			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / X.getDimensions()[0]).elementwiseAdd(regularisationFactor));
+			ThetaGrads.add(Deltas.get(layer).elementwiseScalarMultiply(1.0 / activations.get(activations.size()-1).getDimensions()[0]).elementwiseAdd(regularisationFactor));
 		}
-		
-		//Grand finale: update the weights
-		for (int layer = 0; layer < weights.size(); layer++) {
-			weights.set(layer, weights.get(layer).elementwiseSubtract(ThetaGrads.get(layer).elementwiseScalarMultiply(lambda)));
-		}
-		
-		if (Driver.iter % 1000 == 0) {
-			StringBuilder sb = new StringBuilder("");
+		return ThetaGrads; 
+	}
+	
+	/**
+	 * Prints backpropagation debug information. 
+	 * @param deltas the deltas
+	 * @param Deltas the Deltas
+	 * @param ThetaGrads the gradients of the thetas
+	 * @param activations the activations
+	 * @param cost the cost
+	 */
+	private void printBackpropDebug(ArrayList<Matrix> deltas, ArrayList<Matrix> Deltas, ArrayList<Matrix> ThetaGrads, ArrayList<Matrix> activations, double cost) {
+		StringBuilder sb = new StringBuilder("");
 
-			sb.append("deltas: ");
-			sb.append(deltas.toString());
-			
-			sb.append("\nDeltas: ");
-			sb.append(Deltas.toString());
-			
-			sb.append("\nThetaaGrads: ");
-			sb.append(ThetaGrads.toString());
-
-			sb.append("\nactivations: ");
-			sb.append(activations.toString());
-			
-			sb.append("\nthetas: ");
-			sb.append(weights.toString());
-			
-			System.out.println(sb.toString());
-			
-			System.out.println(costMulti(activations.get(activations.size()-1), Y, lambda)[0]);
-			System.out.println();
-		}
+		sb.append("deltas: ");
+		sb.append(deltas.toString());
 		
-		return costMulti(activations.get(activations.size()-1), Y, lambda); 
+		sb.append("\nDeltas: ");
+		sb.append(Deltas.toString());
+		
+		sb.append("\nThetaaGrads: ");
+		sb.append(ThetaGrads.toString());
+
+		sb.append("\nactivations: ");
+		sb.append(activations.toString());
+		
+		sb.append("\nthetas: ");
+		sb.append(weights.toString());
+		
+		System.out.println(sb.toString());
+		
+		System.out.println(cost);
+		System.out.println();
 	}
 	
 	/**
