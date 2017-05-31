@@ -10,10 +10,10 @@ public class Driver {
 	public static double cost = Double.POSITIVE_INFINITY; 
 
 	public static void main(String[] args) throws DimensionMismatchException {		
-		int[] layers = {2,3,3,1};
+		int[] layers = {2,3,1};
 		NeuralNet nn = new NeuralNet(layers);
 		
-		for (iter = 0; iter < 1000000; iter++) {
+		for (iter = 0; iter < 1; iter++) {
 			Matrix[] things = makeTestMatrices();
 			nn.backpropagate(things[0], things[1], 0.000003);
 		}
@@ -55,7 +55,7 @@ public class Driver {
 		ret[0] = ret[0].elementwiseSigmoid().transpose(); //yeah i wrote this wrong the first time
 		
 		ret[1] = new Matrix(1, 1); 
-		ret[1].setValue(0, 0, a * b); 
+		ret[1].setValue(0, 0, a + b); 
 		ret[1] = ret[1].elementwiseSigmoid().transpose();
 		
 		return ret; 
