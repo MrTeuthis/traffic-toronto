@@ -1,7 +1,7 @@
 import csv, calendar, datetime
 
-DATA_FILENAME = 'weather.csv'
-PARSED_FILENAME = 'machineweather.csv'
+DATA_FILENAME = 'data/weather.csv'
+PARSED_FILENAME = 'data/machineweather.csv'
 
 in_header = []
     
@@ -64,4 +64,4 @@ with open(DATA_FILENAME, newline='') as in_file:
                  in_datum['Rel Hum (%)']
                 ]
                 )
-            
+                
