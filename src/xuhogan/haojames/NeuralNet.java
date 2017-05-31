@@ -143,7 +143,7 @@ public class NeuralNet {
 			
 			Z = X.matrixMultiply(this.getWeights(i).transpose());
 			
-			//Z = Z.elementwiseSigmoid();
+			Z = Z.elementwiseSigmoid();
 			activations.add(Z);
 			X = Z;
 		}
