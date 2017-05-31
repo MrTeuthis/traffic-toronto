@@ -15,7 +15,7 @@ public class Driver {
 		
 		for (iter = 0; iter < 1; iter++) {
 			Matrix[] things = makeTestMatrices();
-			nn.backpropagate(things[0], things[1], 0.000003);
+			nn.backpropagate(things[0], things[1], 0.0003);
 		}
 		
 		ArrayList<Matrix> hypotheticallyPerfectWeights = new ArrayList<Matrix>(1);
@@ -27,7 +27,7 @@ public class Driver {
 				).getValue(0, 0)
 				);
 		
-		System.out.println(" vs " + new Matrix(new double[][]{{-0.75}}).elementwiseSigmoid().getValue(0, 0));
+		System.out.println(" vs " + new Matrix(new double[][]{{0.75}}).elementwiseSigmoid().getValue(0, 0));
 		return; 
 	}
 
