@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("haojames.haojames.haojames.haohames.neuraltrafficapplication", appContext.getPackageName());
+        assertEquals("xuhogan.haojames.neuraltrafficapplication", appContext.getPackageName());
     }
 }
