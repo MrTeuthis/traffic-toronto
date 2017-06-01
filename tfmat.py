@@ -1,6 +1,9 @@
 import tensorflow as tf
 import random as rand
 
+# To suppress debug output, run python or python3 with the -O option:
+#$ python -O tfmat.py
+
 NUM_IN = 2
 NUM_HIDDEN = 5
 NUM_OUT = 2
@@ -84,16 +87,18 @@ with tf.Session() as sess:
                 (train_step, merged_summaries, y, W2, b2, H1, W1, b1, x),
                 feed_dict={x: batch_xs, y_: batch_ys})
         res_writer.add_summary(summaries)
-        print(visualize_tensors(
-            ['y', 'W2', 'b2', 'H1', 'W1', 'b1', 'x'],
-            [yr, W2r, b2r, H1r, W1r, b1r, xr]
-            ))
+        if (__debug__): 
+            print(visualize_tensors(
+                ['y', 'W2', 'b2', 'H1', 'W1', 'b1', 'x'],
+                [yr, W2r, b2r, H1r, W1r, b1r, xr]
+                )) 
 
         final_cost = tf.losses.mean_squared_error(y_, y)
-        print('cost after', (i+1)*(j+1), 'iterations:',
-              sess.run(final_cost, feed_dict={x:[(0.1,0.2)] , y_: [(0.3,0.02)]}),
-              'final results:',
-              sess.run(y, feed_dict={x:[(0.1,0.2)] , y_: [(0.3,0.02)]}))
+        if (__debug__):
+            print('cost after', (i+1)*(j+1), 'iterations:',
+                  sess.run(final_cost, feed_dict={x:[(0.1,0.2)] , y_: [(0.3,0.02)]}),
+                  'final results:',
+                  sess.run(y, feed_dict={x:[(0.1,0.2)] , y_: [(0.3,0.02)]}))
         
         
 
