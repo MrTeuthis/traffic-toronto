@@ -22,6 +22,9 @@ NUM_OUT = 2
 # The learning rate of the neural network. 
 LEARNING_RATE = 0.3
 
+training_inputs = [(0.1, 0.2)]
+training_outputs = [(0.3, 0.02)]
+
 def add_summaries(var):
     with tf.name_scope('summaries'):
         mean = tf.reduce_mean(var)
@@ -102,7 +105,6 @@ with tf.name_scope('cost'):
 train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(mse_cost)
 
 # Get all the data from the pickle
-all_xs, all_ys = get_all_data(PICKLE_X_LOC)
 
 with tf.Session() as sess:
     merged_summaries = tf.summary.merge_all()
