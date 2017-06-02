@@ -22,9 +22,6 @@ NUM_OUT = 2
 # The learning rate of the neural network. 
 LEARNING_RATE = 0.3
 
-# The location of the pickle.
-PICKLE_LOC = ""
-
 def add_summaries(var):
     with tf.name_scope('summaries'):
         mean = tf.reduce_mean(var)
@@ -57,53 +54,6 @@ def stringify_tensors(labels: list, tensors: list, sep='\n'):
 
 def visualize_tensors(labels: list, tensors: list, start='', end='----\n'):
     return start + stringify_tensors(labels, tensors) + end
-
-def get_all_data(pickle_location: str) -> (np.ndarray, np.ndarray):
-    """Reads all the data from a single pickle. (I hope all of the data is in one pickle file)
-    The number of rows read is at most num, but can be lower if it reaches EOF.
-    Returns the data as two numpy arrays."""
-
-    # TODO: I have no idea how your data is structured inside the pickle.
-    # I am going to assume that in the pickle file is something like this hierarchy:
-
-##       tuple(
-##            list(
-##                list containing all x-vals for first case
-##                list containing all x-vals for second case
-##                ...
-##                list containing all x-vals for last case
-##                ),
-##            list(
-##                list containing all y-vals for first case
-##                list containing all y-vals for second case
-##                ...
-##                list containing all y-vals for last case
-##                )
-##            )
-    
-    # If this isn't the case you need to correct the code below as necessary. 
-
-    raw_xs = []
-    raw_ys = []
-    with open(pickle_location, 'rb') as pickle_file:
-        raw_xs, raw_ys = pickle.load(pickle_file)
-
-    # OK. At this point, raw_xs and raw_ys should both be a list of lists.
-    # The inner lists contain the data for each test case. 
-    
-    assert len(raw_xs) == len(raw_ys)
-
-    return np.array(raw_xs), np.array(raw_ys)
-
-def get_some_data(num, xs, ys):
-    num_cases = len(xs)
-    if num > num_cases:
-        raise ValueError('num is {} but there are obly {} test cases'.format(num, num_cases))
-    start_data = random.randint(0, num_cases-1)
-    if start_data + num < num_cases:
-        return xs[start_data:start_data + num], ys[start_data:start_data + num]
-    else:
-        return xs[start_data:] + xs[:start_data + num - num_cases], ys[start_data:] + ys[:start_data + num - num_cases]
 
 print('###### IMPORTANT ######')
 print('If you are just running this file blindly, PRESS CTRL+C NOW and read the comments in the code.')
@@ -152,7 +102,7 @@ with tf.name_scope('cost'):
 train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(mse_cost)
 
 # Get all the data from the pickle
-all_xs, all_ys = get_all_data(PICKLE_LOC)
+all_xs, all_ys = get_all_data(PICKLE_X_LOC)
 
 with tf.Session() as sess:
     merged_summaries = tf.summary.merge_all()
@@ -161,7 +111,8 @@ with tf.Session() as sess:
     tf.global_variables_initializer().run()
     for i in range(500):
         for j in range(100):
-            batch_xs, batch_ys = get_some_data(50, all_xs, all_ys)
+            #batch_xs, batch_ys = get_some_data(50, all_xs, all_ys)
+            batch_xs, batch_ys = training_inputs, training_outputs
             _, cost, yr, W2r, b2r, H1r, W1r, b1r, xr = sess.run(
                 (train_step, mse_cost, y, W2, b2, H1, W1, b1, x),
                 feed_dict={x: batch_xs, y_: batch_ys}
