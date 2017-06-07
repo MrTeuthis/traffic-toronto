@@ -4,9 +4,17 @@ import java.util.Arrays;
 import java.util.function.*;
 import java.text.*;
 
+/**
+ * Represents a matrix. 
+ * @author haosy
+ *
+ */
 public class Matrix {
 	protected double[][] matrix;
 	
+	/**
+	 * Creates a matrix with no values. 
+	 */
 	public Matrix()
 	{
 	}
@@ -48,6 +56,10 @@ public class Matrix {
 		return this.matrix[row][col];
 	}
 	
+	/**
+	 * Replaces each value in the matrix with the value.
+	 * @param value the value
+	 */
 	public void fill(double value) {
 		for (int i=0; i<this.matrix.length; i++) {
 			Arrays.fill(this.matrix[i], value);
@@ -99,6 +111,15 @@ public class Matrix {
 		return product;
 	}
 	
+	/**
+	 * Deprecated. 
+	 * Attempts to multiply two matrices together by transposing them repeatedly. 
+	 * @param other the other matrix
+	 * @return a product
+	 * @throws DimensionMismatchException thrown if the matrices cannot be multipled together, 
+	 * no matter how they are transposed
+	 */
+	@Deprecated
 	public Matrix unsafeMultiply(Matrix other) throws DimensionMismatchException {
 		try {
 			return matrixMultiply(other);
@@ -239,6 +260,11 @@ public class Matrix {
 
 	}
 	
+	/**
+	 * Adds a bias term in the matrix. 
+	 * @param dir the direction to which to add the bias
+	 * @return the new matrix
+	 */
 	public Matrix addBias(Direction dir) {
 		double[][] newMatrix; 
 		if (dir == Direction.LEFT || dir == Direction.RIGHT) {
@@ -357,12 +383,16 @@ public class Matrix {
 	 * In other words, it returns the bottom right corner of the matrix. 
 	 * @param startRows the first row
 	 * @param startCols the first column
-	 * @return
+	 * @return the requested slice
 	 */
 	public Matrix slice(int startRows, int startCols) {
 		return slice(startRows, matrix.length, startCols, matrix[0].length);
 	}
 	
+	/**
+	 * Returns a string representation of the dimensions. 
+	 * @return a string representation of the dimensions. 
+	 */
 	public String dimToStr() {
 		return getDimensions()[0] + "," + getDimensions()[1];
 	}
@@ -379,6 +409,11 @@ public class Matrix {
 		return display;
 	}
 	
+	/**
+	 * Returns the matrix, which is a vector, as a one-dimensional array. 
+	 * @return the matrix, which is a vector, as a one-dimensional array
+	 * @throws DimensionMismatchException thrown when the matrix is not a vector
+	 */
 	public double[] getOneDimensionalArray() throws DimensionMismatchException {
 		if (matrix.length == 1) {
 			return matrix[0];

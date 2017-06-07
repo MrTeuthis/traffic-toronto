@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
+/**
+ * Represents a neural net with layers of weights. 
+ * @author haosy
+ *
+ */
 public class NeuralNet {
 	private int[] layers;
 	private ArrayList<Matrix> weights;
 	
+	/**
+	 * Constructs an empty neural net with no defined weights or layers. 
+	 */
 	public NeuralNet()
 	{
 	}

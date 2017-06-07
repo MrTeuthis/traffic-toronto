@@ -4,8 +4,17 @@ import java.util.function.DoubleUnaryOperator;
 
 import xuhogan.haojames.*;
 
+/**
+ * test cases
+ * @author haosy
+ *
+ */
 public class TestCases {
 
+	/**
+	 * runs the test cases
+	 * @throws Throwable
+	 */
 	public static void testMatrix() throws Throwable {
 		// equality
 		Matrix equalityA = new Matrix( new double[][] {{4, 6, 3}});
@@ -86,6 +95,11 @@ public class TestCases {
 		assert arg.elementwiseOperation(duo).equals(result);
 	}
 	
+	/**
+	 * runs the test cases
+	 * @param args arguments
+	 * @throws Throwable throwable
+	 */
 	public static void main(String[] args) throws Throwable {
 		testMatrix();
 	}

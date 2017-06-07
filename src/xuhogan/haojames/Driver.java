@@ -4,11 +4,27 @@ package xuhogan.haojames;
 import java.util.*;
 import java.io.*;
 
+/**
+ * the driver that runs the program
+ * @author haosy
+ *
+ */
 public class Driver {
 	
+	/**
+	 * the iteration number
+	 */
 	public static long iter = 0;
+	/**
+	 * the cost 
+	 */
 	public static double cost = Double.POSITIVE_INFINITY; 
 
+	/**
+	 * the program
+	 * @param args the args
+	 * @throws DimensionMismatchException thrown when a matrix is not playing nice
+	 */
 	public static void main(String[] args) throws DimensionMismatchException {		
 		int[] layers = {2,3,1};
 		NeuralNet nn = new NeuralNet(layers);
@@ -31,6 +47,11 @@ public class Driver {
 		return; 
 	}
 
+	/**
+	 * prints an array of doubles
+	 * @param vals the array of doubles
+	 * @return the string representation of the array of doubles
+	 */
 	public static String printArray(double[] vals) {
 		StringBuilder ret = new StringBuilder("");
 		boolean hasStarted = false;
@@ -44,6 +65,10 @@ public class Driver {
 		return ret.toString();
 	}
 	
+	/**
+	 * makes test matrices
+	 * @return the test matrices
+	 */
 	public static Matrix[] makeTestMatrices() {
 		Random rand = new Random();
 		double a = rand.nextInt(101) - 50; 
@@ -61,6 +86,12 @@ public class Driver {
 		return ret; 
 	}
 
+	/**
+	 * whether a matrix contains a value
+	 * @param mat the matrix
+	 * @param d the value
+	 * @return {@literal true} if the matrix contains the value, {@literal false} otherwise
+	 */
 	public static boolean containsValue(Matrix mat, double d) {
 		for (double[] row : mat.matrix) {
 			for (double val : row) {
