@@ -201,3 +201,27 @@ tmp/
 ### This is where we put our data
 /data/
 /results/
+/neural-net/centreline/*.pkl
+/neural-net/centreline/*.dbf
+/neural-net/centreline/*.prj
+/neural-net/centreline/*.sbn
+/neural-net/centreline/*.sbx
+/neural-net/centreline/*.xml
+/neural-net/centreline/*.txt
+/neural-net/centreline/*.shp
+/neural-net/centreline/*.shx
+/neural-net/data/*.pkl
+/neural-net/speed/*.pkl
+/neural-net/speed/*.dbf
+/neural-net/speed/*.prj
+/neural-net/speed/*.sbn
+/neural-net/speed/*.shp
+/neural-net/speed/*.sbx
+/neural-net/speed/*.xml
+/neural-net/speed/*.txt
+/neural-net/speed/*.shx
+/neural-net/speed/*.csv
+/neural-net/weather/*.csv
+/neural-net/weather/*.docx
+/neural-net/weather/*.pkl
+/neural-net/weather/*.txt
